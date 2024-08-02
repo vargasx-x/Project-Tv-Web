@@ -1,15 +1,35 @@
 package co.edu.uptc.management.persistence;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.StringTokenizer;
+import java.util.stream.Collectors;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.w3c.dom.NodeList;
+
 import co.edu.uptc.management.constants.CommonConstants;
 import co.edu.uptc.management.enums.EtypeFile;
 import co.edu.uptc.management.interfaces.IActionFile;
 
-public class ManagementTv extends FilePlain implements IActionFile {
+public class ManagementPersistenceTv extends FilePlain implements IActionFile {
 
     private final String NAME_TAG_TV = "tv";
     private List<Tv> listTv;
 
-    public ManagementTv() {
+    public ManagementPersistenceTv() {
         this.listTv = new ArrayList<>();
         loadAllFiles();
     }

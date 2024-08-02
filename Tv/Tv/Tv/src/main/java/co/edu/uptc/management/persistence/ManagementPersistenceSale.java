@@ -1,17 +1,36 @@
 package co.edu.uptc.management.persistence;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+import java.util.stream.Collectors;
+
+import javax.swing.JOptionPane;
 import javax.xml.bind.Element;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.w3c.dom.NodeList;
 
 import co.edu.uptc.management.constants.CommonConstants;
 import co.edu.uptc.management.enums.EtypeFile;
 import co.edu.uptc.management.interfaces.IActionFile;
 
-public class ManagementSale extends FilePlain implements IActionFile {
+public class ManagementPersistenceSale extends FilePlain implements IActionFile {
     private final String NAME_TAG_SALE = "sale";
     private List<Sale> listSale;
     private ManagementTv managementTv; // Instancia de ManagementTv
 
-    public ManagementSale(ManagementTv managementTv) {
+    public ManagementPersistenceSale(ManagementTv managementTv) {
         this.listSale = new ArrayList<>();
         this.managementTv = managementTv; // Inicializar ManagementTv
 
