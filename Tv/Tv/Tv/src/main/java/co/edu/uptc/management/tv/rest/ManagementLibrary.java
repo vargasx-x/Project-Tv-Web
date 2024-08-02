@@ -1,8 +1,5 @@
 package co.edu.uptc.management.library.rest;
 
-import java.util.List;
-import java.util.Objects;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -13,8 +10,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import co.edu.uptc.management.library.dto.BookDTO;
-import co.edu.uptc.management.persistence.ManagementPersistenceBooks;
+import co.edu.uptc.management.tv.dto.SaleDTO;
 
 @Path("/ManagementLibrary")
 public class ManagementLibrary {
@@ -28,15 +24,15 @@ public class ManagementLibrary {
 	@GET
 	@Path("/getBooks")
 	@Produces( { MediaType.APPLICATION_JSON } )
-	public List<BookDTO> getBooks(){
+	public List<SaleDTO> getBooks(){
 		return managementPersistenceBooks.getListBooksDTO();
 	}
 	
 	@GET
 	@Path("/getBooksByCode")
 	@Produces( { MediaType.APPLICATION_JSON } )
-	public BookDTO getBooksByCode(@QueryParam("codeBook") String codeBook){
-		for(BookDTO bookDTO: managementPersistenceBooks.getListBooksDTO()) {
+	public SaleDTO getBooksByCode(@QueryParam("codeBook") String codeBook){
+		for(SaleDTO bookDTO: managementPersistenceBooks.getListBooksDTO()) {
 			if(bookDTO.getCode().equals(codeBook)) {
 				return bookDTO;
 			}
@@ -49,7 +45,7 @@ public class ManagementLibrary {
 	@Path("/createBook")
 	@Produces({ MediaType.APPLICATION_JSON })
 	@Consumes({ MediaType.APPLICATION_JSON })
-	public BookDTO createBook(BookDTO bookDTO) {
+	public SaleDTO createBook(SaleDTO bookDTO) {
 		if(managementPersistenceBooks.getListBooksDTO().add(bookDTO)) {
 			managementPersistenceBooks.dumpFilePlain("books.txt");
 			return bookDTO;
@@ -61,8 +57,8 @@ public class ManagementLibrary {
 	@Path("/updateBook")
 	@Produces({ MediaType.APPLICATION_JSON })
 	@Consumes({ MediaType.APPLICATION_JSON })
-	public BookDTO updateBook(BookDTO bookDTO) {
-		for(BookDTO book: managementPersistenceBooks.getListBooksDTO()) {
+	public SaleDTO updateBook(SaleDTO bookDTO) {
+		for(SaleDTO book: managementPersistenceBooks.getListBooksDTO()) {
 			if(book.getCode().equals(bookDTO.getCode())) {
 				book.setCode(bookDTO.getName());
 				book.setName(bookDTO.getName());
@@ -82,8 +78,8 @@ public class ManagementLibrary {
 	@Path("/updateBookAttribute")
 	@Produces({ MediaType.APPLICATION_JSON })
 	@Consumes({ MediaType.APPLICATION_JSON })
-	public BookDTO updateBookAttribute(BookDTO bookDTO) {
-		for(BookDTO book: managementPersistenceBooks.getListBooksDTO()) {
+	public SaleDTO updateBookAttribute(SaleDTO bookDTO) {
+		for(SaleDTO book: managementPersistenceBooks.getListBooksDTO()) {
 			if(book.getCode().equals(bookDTO.getCode())) {
 				if(!Objects.isNull(bookDTO.getName())) {
 					book.setName(bookDTO.getName());
@@ -119,8 +115,8 @@ public class ManagementLibrary {
 	@Path("/deleteBook")
 	@Produces({ MediaType.APPLICATION_JSON })
 	@Consumes({ MediaType.APPLICATION_JSON })
-	public BookDTO deleteBook(@QueryParam("codeBook") String codeBook) {
-		BookDTO bookDTO = this.getBooksByCode(codeBook);
+	public SaleDTO deleteBook(@QueryParam("codeBook") String codeBook) {
+		SaleDTO bookDTO = this.getBooksByCode(codeBook);
 		if(bookDTO != null) {
 			managementPersistenceBooks.getListBooksDTO().remove(bookDTO);
 			managementPersistenceBooks.dumpFilePlain("books.txt");

@@ -1,35 +1,33 @@
 package co.edu.uptc.management.library.dto;
 
 public class UserDTO {
-	private String nameUser;
+	private String userName;
 	private String password;
-	
-	public UserDTO() {
-		super();
-	}
-	
-	public UserDTO(String nameUser, String password) {
-		super();
-		this.nameUser = nameUser;
-		this.password = password;
+
+	public User(String userName, String password) {
+        this.userName = userName;
+        this.password = password;
+    }
+
+	public String getUserName() {
+		return userName;
 	}
 
-	public String getNameUser() {
-		return nameUser;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
-	public void setNameUser(String nameUser) {
-		this.nameUser = nameUser;
-	}
+
 	public String getPassword() {
 		return password;
 	}
+
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
 	@Override
 	public String toString() {
-		return "UserDTO [nameUser=" + nameUser + ", password=" + password + "]";
+		return "User [userName=" + userName + ", password=" + password + "]";
 	}
-	
+
 }

@@ -8,11 +8,11 @@ import co.edu.uptc.management.constants.CommonConstants;
 import co.edu.uptc.management.library.dto.BookDTO;
 
 public class ManagementPersistenceBooks extends FilePlain {
-	private List<BookDTO> listBooksDTO = new ArrayList<>();
+	private List<SaleDTO> listBooksDTO = new ArrayList<>();
 
 	public void dumpFilePlain(String rutaArchivo) {
 		List<String> records = new ArrayList<>();
-		for (BookDTO bookDTO : listBooksDTO) {
+		for (SaleDTO bookDTO : listBooksDTO) {
 			StringBuilder contentContact = new StringBuilder();
 			contentContact.append(bookDTO.getCode()).append(CommonConstants.SEMI_COLON);
 			contentContact.append(bookDTO.getName()).append(CommonConstants.SEMI_COLON);
@@ -38,18 +38,18 @@ public class ManagementPersistenceBooks extends FilePlain {
 				String yearPublish = tokens.nextToken();
 				String pageQuantity = tokens.nextToken();
 				String publisher = tokens.nextToken();
-				listBooksDTO.add(new BookDTO(code, name, author,
+				listBooksDTO.add(new SaleDTO(code, name, author,
 						genre, yearPublish,
 						Integer.parseInt(pageQuantity), publisher));
 			}
 		}
 	}
 
-	public List<BookDTO> getListBooksDTO() {
+	public List<SaleDTO> getListBooksDTO() {
 		return listBooksDTO;
 	}
 
-	public void setListBooksDTO(List<BookDTO> listBooksDTO) {
+	public void setListBooksDTO(List<SaleDTO> listBooksDTO) {
 		this.listBooksDTO = listBooksDTO;
 	}
 }
