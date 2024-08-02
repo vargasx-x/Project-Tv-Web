@@ -1,0 +1,16 @@
+<XML version="1.0" encoding="UTF-8"> 
+<sale>
+<idSale>2345688</idSale>
+<serialNumber>8888888</serialNumber>
+<saleDate>12-04-23</saleDate>
+<salePrice>32950</salePrice>
+<paymentMethod>Nequi</paymentMethod>
+</sale>
+<sale>
+<idSale>124124124</idSale>
+<serialNumber>et65gergt</serialNumber>
+<saleDate>12-02-2023</saleDate>
+<salePrice>43000</salePrice>
+<paymentMethod>Bancolombia</paymentMethod>
+</sale>
+</XML>

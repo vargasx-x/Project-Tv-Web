@@ -1,0 +1,12 @@
+app.file.path.txt = resorce/data/
+app.file.name.txt = Tv.txt
+app.file.name.user.ser = User.ser
+app.file.name.sale.txt = Sale.txt
+app.file.name.xml = Tv.xml
+app.file.name.sale.xml = Sale.xml
+app.file.name.csv = Tv.csv
+app.file.name.sale.csv = Sale.csv
+app.file.name.json = Tv.json
+app.file.name.sale.json = Sale.json
+app.file.name.ser = Tv.ser
+app.file.name.sale.ser = Sale.ser

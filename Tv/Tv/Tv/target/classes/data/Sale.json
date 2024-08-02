@@ -1,0 +1,16 @@
+[
+{
+"idSale" : "2345688", 
+"serialNumber" : "8888888", 
+"saleDate" : "12-04-23", 
+"salePrice" : "32950", 
+"paymentMethod" : "Nequi"
+}, 
+{
+"idSale" : "124124124", 
+"serialNumber" : "et65gergt", 
+"saleDate" : "12-02-2023", 
+"salePrice" : "43000", 
+"paymentMethod" : "Bancolombia"
+}
+]

@@ -1,0 +1,107 @@
+[
+{
+"serialNumber" : "000000000",
+"resolution" : "1290",
+"sizeDisplay" : "234",
+"technologyDisplay" : "AAAAA",
+"systemOperational" : "Boring"
+},
+{
+"serialNumber" : "00877",
+"resolution" : "i",
+"sizeDisplay" : "2",
+"technologyDisplay" : "2",
+"systemOperational" : "apple"
+},
+{
+"serialNumber" : "00877",
+"resolution" : "i",
+"sizeDisplay" : "2",
+"technologyDisplay" : "2",
+"systemOperational" : "apple"
+},
+{
+"serialNumber" : "00877",
+"resolution" : "i",
+"sizeDisplay" : "2",
+"technologyDisplay" : "2",
+"systemOperational" : "apple"
+},
+{
+"serialNumber" : "00877",
+"resolution" : "i",
+"sizeDisplay" : "2",
+"technologyDisplay" : "2",
+"systemOperational" : "apple"
+},
+{
+"serialNumber" : "2353GDFG",
+"resolution" : "4K",
+"sizeDisplay" : "678",
+"technologyDisplay" : "OLED",
+"systemOperational" : "Apple"
+},
+{
+"serialNumber" : "2353GDFG",
+"resolution" : "4K",
+"sizeDisplay" : "678",
+"technologyDisplay" : "OLED",
+"systemOperational" : "Apple"
+},
+{
+"serialNumber" : "354345gr",
+"resolution" : "1080",
+"sizeDisplay" : "45",
+"technologyDisplay" : "AMOLED",
+"systemOperational" : "Android"
+},
+{
+"serialNumber" : "354345gr",
+"resolution" : "1080",
+"sizeDisplay" : "45",
+"technologyDisplay" : "AMOLED",
+"systemOperational" : "Android"
+},
+{
+"serialNumber" : "78965",
+"resolution" : "4k",
+"sizeDisplay" : "78",
+"technologyDisplay" : "AMOLED",
+"systemOperational" : "APPLE"
+},
+{
+"serialNumber" : "8888888",
+"resolution" : "4k",
+"sizeDisplay" : "32",
+"technologyDisplay" : "OLED",
+"systemOperational" : "APPLE"
+},
+{
+"serialNumber" : "DSGDFG",
+"resolution" : "720",
+"sizeDisplay" : "345",
+"technologyDisplay" : "AMOLED",
+"systemOperational" : "Android"
+},
+{
+"serialNumber" : "et65gergt",
+"resolution" : "789",
+"sizeDisplay" : "456",
+"technologyDisplay" : "OLED",
+"systemOperational" : "Apple"
+},
+{
+"serialNumber" : "aaaaaaaaaa",
+"resolution" : "4k",
+"sizeDisplay" : "1290",
+"technologyDisplay" : "ANON",
+"systemOperational" : "PL"
+},
+{
+"serialNumber" : "bbbbbbbb",
+"resolution" : "123124",
+"sizeDisplay" : "243",
+"technologyDisplay" : "2342",
+"systemOperational" : "2432"
+}
+]
