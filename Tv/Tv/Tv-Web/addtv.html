@@ -1,10 +1,42 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>Añadir Tv</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style_add.css">
+    <title>Añadir Televisor</title>
 </head>
 <body>
-    
+    <div class="container mt-5">
+        <div class="card add">
+            <div class="card-body">
+                <h5 class="card-title">Agregar Televisor</h5>
+                <div class="form-group">
+                    <label for="input-serial-number">Número de Serie</label>
+                    <input type="text" class="form-control" id="input-serial-number">
+                </div>
+                <div class="form-group">
+                    <label for="input-resolution">Resolución</label>
+                    <input type="text" class="form-control" id="input-resolution">
+                </div>
+                <div class="form-group">
+                    <label for="input-size-display">Tamaño de Pantalla</label>
+                    <input type="text" class="form-control" id="input-size-display">
+                </div>
+                <div class="form-group">
+                    <label for="input-technology-display">Tecnología de Pantalla</label>
+                    <input type="text" class="form-control" id="input-technology-display">
+                </div>
+                <div class="form-group">
+                    <label for="input-system-operational">Sistema Operativo</label>
+                    <input type="text" class="form-control" id="input-system-operational">
+                </div>
+                <button id="add-tv-button" type="submit" class="btn btn-outline-primary">Añadir Televisor</button>
+            </div>
+        </div>
+    </div>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/addtv.js"></script>
 </body>
 </html>

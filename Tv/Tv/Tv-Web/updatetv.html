@@ -1,10 +1,42 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>Actualizar Tv</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style_update.css">
+    <title>Actualizar Televisor</title>
 </head>
 <body>
-    
+    <div class="container mt-5">
+        <div class="card update">
+            <div class="card-body">
+                <h5 class="card-title">Actualizar Televisor</h5>
+                <div class="form-group">
+                    <label for="input-serial-number-update">Número de Serie</label>
+                    <input type="text" class="form-control" id="input-serial-number-update">
+                </div>
+                <div class="form-group">
+                    <label for="input-resolution-update">Resolución</label>
+                    <input type="text" class="form-control" id="input-resolution-update">
+                </div>
+                <div class="form-group">
+                    <label for="input-size-display-update">Tamaño de Pantalla</label>
+                    <input type="text" class="form-control" id="input-size-display-update">
+                </div>
+                <div class="form-group">
+                    <label for="input-technology-display-update">Tecnología de Pantalla</label>
+                    <input type="text" class="form-control" id="input-technology-display-update">
+                </div>
+                <div class="form-group">
+                    <label for="input-system-operational-update">Sistema Operativo</label>
+                    <input type="text" class="form-control" id="input-system-operational-update">
+                </div>
+                <button id="update-tv-button" type="submit" class="btn btn-outline-warning">Actualizar Televisor</button>
+            </div>
+        </div>
+    </div>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/updatetv.js"></script>
 </body>
 </html>

@@ -1,10 +1,26 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>Eliminar Tv</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style_delete.css">
+    <title>Eliminar Televisor</title>
 </head>
 <body>
-    
+    <div class="container mt-5">
+        <div class="card delete">
+            <div class="card-body">
+                <h5 class="card-title">Eliminar Televisor</h5>
+                <div class="form-group">
+                    <label for="input-serial-number-delete">Número de Serie</label>
+                    <input type="text" class="form-control" id="input-serial-number-delete">
+                </div>
+                <button id="delete-tv-button" type="submit" class="btn btn-outline-danger">Eliminar Televisor</button>
+            </div>
+        </div>
+    </div>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/deletetv.js"></script>
 </body>
 </html>
