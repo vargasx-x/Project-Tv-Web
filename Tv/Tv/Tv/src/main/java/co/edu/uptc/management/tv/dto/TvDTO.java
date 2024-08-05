@@ -1,4 +1,6 @@
-package co.edu.uptc.management.library.dto;
+package co.edu.uptc.management.tv.dto;
+
+import java.io.Serializable;
 
 public class TvDTO implements Serializable {
 

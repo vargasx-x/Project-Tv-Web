@@ -1,10 +1,34 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>Añadir ventas</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style_crud.css">
+    <title>Añadir Venta</title>
 </head>
 <body>
-    
+    <div class="container mt-5">
+        <div class="card add">
+            <div class="card-body">
+                <h5 class="card-title">Agregar Venta</h5>
+                <div class="form-group">
+                    <label for="input-sale-code">Código de la venta</label>
+                    <input type="text" class="form-control" id="input-sale-code">
+                </div>
+                <div class="form-group">
+                    <label for="input-tv-code-sale">Código del televisor</label>
+                    <input type="text" class="form-control" id="input-tv-code-sale">
+                </div>
+                <div class="form-group">
+                    <label for="input-customer-sale">Nombre del cliente</label>
+                    <input type="text" class="form-control" id="input-customer-sale">
+                </div>
+                <button id="add-sale-button" type="submit" class="btn btn-outline-primary">Añadir Venta</button>
+            </div>
+        </div>
+    </div>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/addsale.js"></script>
 </body>
 </html>

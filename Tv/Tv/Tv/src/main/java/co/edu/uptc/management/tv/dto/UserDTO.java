@@ -1,4 +1,4 @@
-package co.edu.uptc.management.library.dto;
+package co.edu.uptc.management.tv.dto;
 
 public class UserDTO {
 	private String userName;

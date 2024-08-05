@@ -1,4 +1,4 @@
-package co.edu.uptc.management.library.rest;
+package co.edu.uptc.management.tv.rest;
 
 import java.util.List;
 import java.util.Objects;
