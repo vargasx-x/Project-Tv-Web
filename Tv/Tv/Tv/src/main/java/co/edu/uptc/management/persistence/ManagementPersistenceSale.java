@@ -18,12 +18,16 @@ import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;  // Asegúrate de importar de org.w3c.dom
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 
 import co.edu.uptc.management.constants.CommonConstants;
 import co.edu.uptc.management.enums.EtypeFile;
@@ -330,29 +334,32 @@ public void loadFile(EtypeFile etypefile) {
     }
 
     public void loadFileJSON() {
-        listSale.clear(); // Asegúrate de que la lista esté vacía antes de cargar nuevos datos
-        StringBuilder filename = new StringBuilder();
-        filename.append(this.confValue.getPath());
-        filename.append(this.confValue.getNameFileSALE_JSON());
-        String content = this.readFile(filename.toString()).trim();
+    listSale.clear(); // Asegúrate de que la lista esté vacía antes de cargar nuevos datos
+    StringBuilder filename = new StringBuilder();
+    filename.append(this.confValue.getPath());
+    filename.append(this.confValue.getNameFileSALE_JSON());
+    String content = this.readFile(filename.toString()).trim();
 
-        // Verificar si el contenido está vacío o no es un array JSON válido
-        if (content.isEmpty() || !(content.startsWith("[") && content.endsWith("]"))) {
-            System.out.println("El archivo JSON está vacío o no está en el formato esperado.");
-            return;
-        }
+    // Verificar si el contenido está vacío o no es un array JSON válido
+    if (content.isEmpty()) {
+        System.out.println("El archivo JSON está vacío.");
+        return;
+    }
 
-        // Parsear el contenido JSON
-        JSONArray jsonArray = new JSONArray(content);
+    // Crear un objeto Gson para parsear el contenido
+    Gson gson = new Gson();
+    try {
+        // Parsear el contenido JSON a un JsonArray
+        JsonArray jsonArray = gson.fromJson(content, JsonArray.class);
 
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject jsonObject = jsonArray.getJSONObject(i);
+        for (JsonElement element : jsonArray) {
+            JsonObject jsonObject = element.getAsJsonObject();
 
-            String idSale = jsonObject.optString("idSale").trim();
-            String serialNumber = jsonObject.optString("serialNumber").trim();
-            String saleDate = jsonObject.optString("saleDate").trim();
-            String salePrice = jsonObject.optString("salePrice").trim();
-            String paymentMethod = jsonObject.optString("paymentMethod").trim();
+            String idSale = jsonObject.has("idSale") ? jsonObject.get("idSale").getAsString().trim() : "";
+            String serialNumber = jsonObject.has("serialNumber") ? jsonObject.get("serialNumber").getAsString().trim() : "";
+            String saleDate = jsonObject.has("saleDate") ? jsonObject.get("saleDate").getAsString().trim() : "";
+            String salePrice = jsonObject.has("salePrice") ? jsonObject.get("salePrice").getAsString().trim() : "";
+            String paymentMethod = jsonObject.has("paymentMethod") ? jsonObject.get("paymentMethod").getAsString().trim() : "";
 
             TvDTO televisor = findTvBySerialNumber(serialNumber);
 
@@ -369,7 +376,10 @@ public void loadFile(EtypeFile etypefile) {
                 continue;
             }
         }
+    } catch (JsonParseException e) {
+        System.out.println("Error al parsear el archivo JSON: " + e.getMessage());
     }
+}
 
     private void dumpFileSerializate() {
         try (FileOutputStream fileOut = new FileOutputStream(

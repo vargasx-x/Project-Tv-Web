@@ -9,13 +9,13 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <form class="form-login">
+    <form class="form-login" onsubmit="event.preventDefault(); validateUser();">
         <h1>Ingreso al sistema</h1>
         <label for="input-user">Usuario</label>
         <input type="text" id="input-user" placeholder="Ingrese nombre de Usuario" required>
         <label for="input-password">Contraseña</label>
         <input type="password" id="input-password" placeholder="Ingrese su contraseña" required>
-        <input type="button" value="Aceptar" onclick="validateUser()">
+        <input type="submit" value="Aceptar">
     </form>
     <script src="js/scrip.js"></script>
 </body>

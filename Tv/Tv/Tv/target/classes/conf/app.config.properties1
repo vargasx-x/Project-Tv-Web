@@ -1,4 +1,4 @@
-app.file.path.txt = resorce/data/
+app.file.path.txt = resources/data/
 app.file.name.txt = Tv.txt
 app.file.name.user.ser = User.ser
 app.file.name.sale.txt = Sale.txt

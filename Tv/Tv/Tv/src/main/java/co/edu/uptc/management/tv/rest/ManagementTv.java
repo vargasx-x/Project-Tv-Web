@@ -24,7 +24,7 @@ public class ManagementTv {
     @GET
     @Path("/getTvs")
     @Produces({ MediaType.APPLICATION_JSON })
-    public List<TvDTO> getTvs() {
+    public List<Object> getTvs() {
         return managementPersistenceTv.getListTv().stream()
                 .map(tv -> new TvDTO(tv.getSerialNumber(), tv.getResolution(), tv.getSizeDisplay(),
                         tv.getTechnologyDisplay(), tv.getSystemOperational()))

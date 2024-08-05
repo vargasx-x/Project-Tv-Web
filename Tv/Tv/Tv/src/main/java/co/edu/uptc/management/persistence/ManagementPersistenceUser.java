@@ -11,24 +11,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import co.edu.uptc.management.config.Config;
 import co.edu.uptc.management.enums.EtypeFile;
 import co.edu.uptc.management.interfaces.IActionFile;
 import co.edu.uptc.management.tv.dto.UserDTO;
 
 public class ManagementPersistenceUser extends FilePlain implements IActionFile {
     private Map<String, String> userMap;
+    private Config confValue; // Asegúrate de que esta variable esté correctamente inicializada
 
-    public ManagementPersistenceUser() {
+    public ManagementPersistenceUser(Config confValue) {
+        this.confValue = confValue; // Inicializa la configuración
         this.userMap = new HashMap<>();
         loadFile(EtypeFile.USER_SER); // Cargar usuarios al inicializar la clase
     }
 
     // Método para insertar un usuario
     public boolean insertUser(UserDTO user) {
-        if (userMap.containsKey(user.getUserName())) {
+        if (userMap.containsKey(user.getNameUser())) {
             return false; // El usuario ya existe
         }
-        userMap.put(user.getUserName(), user.getPassword());
+        userMap.put(user.getNameUser(), user.getPassword());
         dumpFile(EtypeFile.USER_SER); // Guardar cambios en el almacenamiento persistente
         return true;
     }
@@ -75,7 +78,7 @@ public class ManagementPersistenceUser extends FilePlain implements IActionFile 
     public void dumpFileSerializate() {
         try (FileOutputStream fileOut = new FileOutputStream(
                 this.confValue.getPath().concat(this.confValue.getNameFileUSER_SER()));
-             ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
+                ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
             out.writeObject(this.userMap);
         } catch (IOException e) {
             System.err.println("Error al guardar el archivo de usuarios: " + e.getMessage());
@@ -85,14 +88,21 @@ public class ManagementPersistenceUser extends FilePlain implements IActionFile 
 
     @SuppressWarnings("unchecked")
     public void loadFileSerializate() {
-        File file = new File("resource/data/User.ser");
-            // Imprime la ruta absoluta del archivo para depuración
-            System.out.println("File path: " + file.getAbsolutePath());
+        // Ajusta la ruta según sea necesario
+        String filePath = "C:/Users/Juan Vargas/Downloads/Tv/Tv/Tv/Tv/src/main/resources/data/User.ser";
+        File file = new File(filePath);
 
-           
-        try (FileInputStream fileIn = new FileInputStream(
-                this.confValue.getPath().concat(this.confValue.getNameFileUSER_SER()));
-             ObjectInputStream in = new ObjectInputStream(fileIn)) {
+        // Verifica si el archivo existe
+        if (!file.exists()) {
+            System.err.println("El archivo no existe en la ruta especificada.");
+            System.err.println("Ruta del archivo: " + file.getAbsolutePath());
+            return; // Salir del método si el archivo no existe
+        } else {
+            System.out.println("Archivo encontrado en la ruta: " + file.getAbsolutePath());
+        }
+
+        try (FileInputStream fileIn = new FileInputStream(file);
+                ObjectInputStream in = new ObjectInputStream(fileIn)) {
             this.userMap = (Map<String, String>) in.readObject();
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("Error al cargar el archivo de usuarios: " + e.getMessage());

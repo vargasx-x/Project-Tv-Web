@@ -2,7 +2,7 @@ package co.edu.uptc.management.tv.dto;
 
 import java.io.Serializable;
 
-public class SaleDTO implements Serializable {
+public class SaleDTO implements Serializable  {
 	private String idSale;
 	private TvDTO televisor;
 	private String saleDate;

@@ -1,5 +1,6 @@
 package co.edu.uptc.management.config;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -21,32 +22,30 @@ public class Config {
     private String nameFileCSV;
     private String nameFileSALE_CSV;
 
-    private Config() {
-        this.properties = new Properties();
-        
-         try (InputStream input = getClass().getClassLoader().getResourceAsStream("conf/app.config.properties1")) {
-            if (input == null) {
-                System.err.println("Lo siento, no se puede encontrar el archivo conf/app.config.properties1");
-                return;
-            }
-            properties.load(input);
-            this.path = properties.getProperty("app.file.path.txt");
-            this.nameFileTXT = properties.getProperty("app.file.name.txt");
-            this.nameFileUSER_SER = properties.getProperty("app.file.name.user.ser");
-            this.nameFileSALE_TXT = properties.getProperty("app.file.name.sale.txt");
-            this.nameFileXML = properties.getProperty("app.file.name.xml");
-            this.nameFileSALE_XML = properties.getProperty("app.file.name.sale.xml");
-            this.nameFileJSON = properties.getProperty("app.file.name.json");
-            this.nameFileSALE_JSON = properties.getProperty("app.file.name.sale.json");
-            this.nameFileSer = properties.getProperty("app.file.name.ser");
-            this.nameFileSALE_SER = properties.getProperty("app.file.name.sale.ser");
-            this.nameFileCSV = properties.getProperty("app.file.name.csv");
-            this.nameFileSALE_CSV = properties.getProperty("app.file.name.sale.csv");
-        } catch (IOException ex) {
-            System.err.println("Error al cargar el archivo properties de configuración: " + ex.getMessage());
-        }
-    }
+   private Config() {
+    this.properties = new Properties();
 
+    try (InputStream entrada = getClass().getClassLoader().getResourceAsStream("conf/app.config.properties1")) {
+        if (entrada == null) {
+            throw new FileNotFoundException("Archivo de configuración no encontrado");
+        }
+        properties.load(entrada);
+        this.path = properties.getProperty("app.file.path.txt");
+        this.nameFileTXT = properties.getProperty("app.file.name.txt");
+        this.nameFileUSER_SER = properties.getProperty("app.file.name.user.ser");
+        this.nameFileSALE_TXT = properties.getProperty("app.file.name.sale.txt");
+        this.nameFileXML = properties.getProperty("app.file.name.xml");
+        this.nameFileSALE_XML = properties.getProperty("app.file.name.sale.xml");
+        this.nameFileJSON = properties.getProperty("app.file.name.json");
+        this.nameFileSALE_JSON = properties.getProperty("app.file.name.sale.json");
+        this.nameFileSer = properties.getProperty("app.file.name.ser");
+        this.nameFileSALE_SER = properties.getProperty("app.file.name.sale.ser");
+        this.nameFileCSV = properties.getProperty("app.file.name.csv");
+        this.nameFileSALE_CSV = properties.getProperty("app.file.name.sale.csv");
+    } catch (IOException ex) {
+        System.err.println("Error al cargar el archivo properties de configuración: " + ex.getMessage());
+    }
+}
     public static Config getInstance() {
         if (config == null) {
             config = new Config();

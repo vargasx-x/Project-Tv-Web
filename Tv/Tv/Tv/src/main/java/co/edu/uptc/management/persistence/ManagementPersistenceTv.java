@@ -17,10 +17,14 @@ import java.util.stream.Collectors;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 
 import co.edu.uptc.management.constants.CommonConstants;
 import co.edu.uptc.management.enums.EtypeFile;
@@ -295,41 +299,42 @@ public class ManagementPersistenceTv extends FilePlain implements IActionFile {
     }
 
     public void loadFileJSON() {
-        StringBuilder filename = new StringBuilder();
-        filename.append(this.confValue.getPath());
-        filename.append(this.confValue.getNameFileJSON());
-        String content = this.readFile(filename.toString());
-        content = content.trim();
+    StringBuilder filename = new StringBuilder();
+    filename.append(this.confValue.getPath());
+    filename.append(this.confValue.getNameFileJSON());
+    String content = this.readFile(filename.toString()).trim();
 
-        // Verificar si el contenido está vacío o no es un array JSON válido
-        if (content.isEmpty() || !(content.startsWith("[") && content.endsWith("]"))) {
-            System.out.println("El archivo JSON está vacío o no está en el formato esperado.");
-            return;
-        }
-
-        try {
-            // Crear un JSONArray a partir del contenido
-            JSONArray jsonArray = new JSONArray(content);
-
-            // Iterar sobre cada objeto en el JSONArray
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-                // Obtener los valores de cada campo
-                String serialNumber = jsonObject.optString("serialNumber", "");
-                String resolution = jsonObject.optString("resolution", "");
-                String sizeDisplay = jsonObject.optString("sizeDisplay", "");
-                String technologyDisplay = jsonObject.optString("technologyDisplay", "");
-                String systemOperational = jsonObject.optString("systemOperational", "");
-
-                // Agregar el objeto Tv creado a la lista
-                this.listTv.add(new TvDTO(serialNumber, resolution, sizeDisplay, technologyDisplay, systemOperational));
-            }
-        } catch (Exception e) {
-            System.out.println("Error al procesar el archivo JSON: " + e.getMessage());
-            e.printStackTrace(); // Manejo de excepciones específicas según tu necesidad
-        }
+    // Verificar si el contenido está vacío
+    if (content.isEmpty()) {
+        System.out.println("El archivo JSON está vacío.");
+        return;
     }
+
+    // Crear un objeto Gson para parsear el contenido
+    Gson gson = new Gson();
+    try {
+        // Parsear el contenido JSON a un JsonArray
+        JsonArray jsonArray = gson.fromJson(content, JsonArray.class);
+
+        // Iterar sobre cada objeto en el JsonArray
+        for (JsonElement element : jsonArray) {
+            JsonObject jsonObject = element.getAsJsonObject();
+
+            // Obtener los valores de cada campo
+            String serialNumber = jsonObject.has("serialNumber") ? jsonObject.get("serialNumber").getAsString().trim() : "";
+            String resolution = jsonObject.has("resolution") ? jsonObject.get("resolution").getAsString().trim() : "";
+            String sizeDisplay = jsonObject.has("sizeDisplay") ? jsonObject.get("sizeDisplay").getAsString().trim() : "";
+            String technologyDisplay = jsonObject.has("technologyDisplay") ? jsonObject.get("technologyDisplay").getAsString().trim() : "";
+            String systemOperational = jsonObject.has("systemOperational") ? jsonObject.get("systemOperational").getAsString().trim() : "";
+
+            // Crear y agregar el objeto TvDTO a la lista
+            this.listTv.add(new TvDTO(serialNumber, resolution, sizeDisplay, technologyDisplay, systemOperational));
+        }
+    } catch (JsonParseException e) {
+        System.out.println("Error al procesar el archivo JSON: " + e.getMessage());
+        e.printStackTrace(); // Manejo de excepciones específicas según tu necesidad
+    }
+}
 
     private void dumpFileSerializate() {
         try (FileOutputStream fileOut = new FileOutputStream(
