@@ -13,26 +13,48 @@ document.addEventListener("DOMContentLoaded", function () {
         const content = document.getElementById("content");
         cleanContent(); // Limpiar el contenido antes de agregar nuevas tarjetas
 
-        let addCard, viewCard;
         switch (section) {
             case 'tvs':
-                addCard = createCard('./addtv.html', 'Agregar Televisor', 'resources/icons/agregar-tv.png');
-                viewCard = createCard('./viewtvs.html', 'Ver Televisores', 'resources/icons/ver-tv.png');
+                loadTvSection(content);
                 break;
             case 'sales':
-                addCard = createCard('./addsale.html', 'Agregar Venta', 'resources/icons/agregar-venta.png');
-                viewCard = createCard('./viewsales.html', 'Ver Ventas', 'resources/icons/ver-venta.png');
+                loadSalesSection(content);
                 break;
             case 'users':
-                addCard = createCard('./adduser.html', 'Agregar Usuario', 'resources/icons/agregar-usuario.png');
-                viewCard = createCard('./viewusers.html', 'Ver Usuarios', 'resources/icons/ver-usuario.png');
+                loadUsersSection(content);
                 break;
             default:
                 return;
         }
+    }
 
+    function loadTvSection(content) {
+        const addCard = createCard('./addtv.html', 'Agregar Televisor', 'resources/icons/agregar-tv.png');
+        const viewCard = createCard('./viewtvs.html', 'Ver Televisores', 'resources/icons/ver-tv.png');
+        const deleteCard = createCard('./deletetv.html', 'Eliminar Televisor', 'resources/icons/eliminar-tv.png');
+        const updateCard = createCard('./updatetv.html', 'Actualizar Televisor', 'resources/icons/actualizar-tv.png');
         content.appendChild(addCard);
         content.appendChild(viewCard);
+        content.appendChild(deleteCard);
+        content.appendChild(updateCard);
+    }
+
+    function loadSalesSection(content) {
+        const addCard = createCard('./addsale.html', 'Agregar Venta', 'resources/icons/agregar-venta.png');
+        const viewCard = createCard('./viewsales.html', 'Ver Ventas', 'resources/icons/ver-venta.png');
+        const deleteCard = createCard('./deletesale.html', 'Eliminar Venta', 'resources/icons/eliminar-venta.png');
+        content.appendChild(addCard);
+        content.appendChild(viewCard);
+        content.appendChild(deleteCard);
+    }
+
+    function loadUsersSection(content) {
+        const addCard = createCard('./adduser.html', 'Agregar Usuario', 'resources/icons/agregar-usuario.png');
+        const viewCard = createCard('./viewusers.html', 'Ver Usuarios', 'resources/icons/ver-usuario.png');
+        const deleteCard = createCard('./deleteuser.html', 'Eliminar Usuario', 'resources/icons/eliminar-usuario.png');
+        content.appendChild(addCard);
+        content.appendChild(viewCard);
+        content.appendChild(deleteCard);
     }
 
     function createCard(href, text, imgSrc) {

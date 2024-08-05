@@ -1,3 +1,4 @@
+/* Estilos básicos */
 body {
     display: flex;
     min-height: 100vh;
@@ -52,12 +53,33 @@ body {
     margin: 10px;
     width: calc(30% - 20px);
     height: 55%;
-    display: inline-block;
-    vertical-align: top;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .card-body {
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Contenedor del ícono */
+.card-icon {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    padding: 30px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card img {
+    max-width: 80px; /* Ajusta este tamaño según tus necesidades */
 }
 
 .card-title {
@@ -86,14 +108,13 @@ body {
     display: inline-block;
     padding: 10px 15px;
     color: white;
-    background-color: rebeccapurple;
+    background-color: rgb(117, 185, 212);
     text-decoration: none;
     border-radius: 4px;
-
 }
 
 .btn-danger:hover {
-    background-color: purple;
+    background-color: rgb(39, 218, 134);
 }
 
 .btn-success {
@@ -104,11 +125,9 @@ body {
     text-decoration: none;
     border-radius: 4px;
     cursor: pointer;
-    
-
 }
 
-.btn-danger:hover {
+.btn-success:hover {
     background-color: rgb(54, 127, 150);
 }
 
@@ -130,6 +149,6 @@ body {
 
     .card {
         width: calc(100% - 20px);
-        height: 220px;
+        height: auto;
     }
 }
