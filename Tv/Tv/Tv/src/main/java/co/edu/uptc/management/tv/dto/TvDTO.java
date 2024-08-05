@@ -12,10 +12,10 @@ public class TvDTO implements Serializable {
 
 	/** constructor vacio */
 
-	public Tv() {
+	public TvDTO() {
 	}
 
-	public Tv(String serialNumber, String resolution, String sizeDisplay, String technologyDisplay,
+	public TvDTO(String serialNumber, String resolution, String sizeDisplay, String technologyDisplay,
 			String systemOperational) {
 		this.serialNumber = serialNumber;
 		this.resolution = resolution;

@@ -9,6 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
@@ -18,24 +19,26 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 import co.edu.uptc.management.constants.CommonConstants;
 import co.edu.uptc.management.enums.EtypeFile;
 import co.edu.uptc.management.interfaces.IActionFile;
+import co.edu.uptc.management.tv.dto.TvDTO;
 
 public class ManagementPersistenceTv extends FilePlain implements IActionFile {
 
     private final String NAME_TAG_TV = "tv";
-    private List<Tv> listTv;
+    private List<TvDTO> listTv;
 
     public ManagementPersistenceTv() {
         this.listTv = new ArrayList<>();
         loadAllFiles();
     }
 
-    public Tv findTvBySerialNumber(String serialNumber) {
-        for (Tv tv : listTv) {
+    public TvDTO findTvBySerialNumber(String serialNumber) {
+        for (TvDTO tv : listTv) {
             if (tv.getSerialNumber().equals(serialNumber)) {
                 return tv;
             }
@@ -43,7 +46,7 @@ public class ManagementPersistenceTv extends FilePlain implements IActionFile {
         return null;
     }
 
-    public boolean insertTv(Tv tv) {
+    public boolean insertTv(TvDTO tv) {
         if (!isDuplicateTv(tv)) {
             boolean success = listTv.add(tv);
             if (success) {
@@ -55,8 +58,8 @@ public class ManagementPersistenceTv extends FilePlain implements IActionFile {
 
     }
 
-    private boolean isDuplicateTv(Tv tv) {
-        for (Tv existingTv : listTv) {
+    private boolean isDuplicateTv(TvDTO tv) {
+        for (TvDTO existingTv : listTv) {
             if (existingTv.getSerialNumber().equals(tv.getSerialNumber())) {
                 return true;
             }
@@ -64,16 +67,16 @@ public class ManagementPersistenceTv extends FilePlain implements IActionFile {
         return false;
     }
 
-    public List<Tv> listAllTvs() {
+    public List<TvDTO> listAllTvs() {
         return new ArrayList<>(listTv);
     }
 
     public boolean deleteTv(String serialNumber) {
         boolean success = false;
-        Iterator<Tv> iterator = listTv.iterator();
+        Iterator<TvDTO> iterator = listTv.iterator();
 
         while (iterator.hasNext()) {
-            Tv tv = iterator.next();
+            TvDTO tv = iterator.next();
             if (tv.getSerialNumber().equals(serialNumber)) {
                 iterator.remove();
                 success = true;
@@ -88,9 +91,9 @@ public class ManagementPersistenceTv extends FilePlain implements IActionFile {
         return success;
     }
 
-    public boolean updateTv(Tv updatedTv) {
+    public boolean updateTv(TvDTO updatedTv) {
         for (int i = 0; i < listTv.size(); i++) {
-            Tv tv = listTv.get(i);
+            TvDTO tv = listTv.get(i);
             if (tv.getSerialNumber().equals(updatedTv.getSerialNumber())) {
                 listTv.set(i, updatedTv);
                 synchronizeAllFiles(); // Sincronizar todos los archivos después de la actualización
@@ -100,8 +103,8 @@ public class ManagementPersistenceTv extends FilePlain implements IActionFile {
         return false;
     }
 
-    public Tv getTv(String serialNumber) {
-        for (Tv tv : listTv) {
+    public TvDTO getTv(String serialNumber) {
+        for (TvDTO tv : listTv) {
             if (tv.getSerialNumber().equals(serialNumber)) {
                 return tv;
             }
@@ -120,24 +123,47 @@ public class ManagementPersistenceTv extends FilePlain implements IActionFile {
     @Override
     public void dumpFile(EtypeFile etypefile) {
         switch (etypefile) {
-            case TXT -> dumpFilePlain();
-            case XML -> dumpFileXML();
-            case JSON -> dumpFileJSON();
-            case SERIALIZATE -> dumpFileSerializate();
-            case CSV -> dumpFileCSV();
+            case TXT:
+                dumpFilePlain();
+                break;
+            case XML:
+                dumpFileXML();
+                break;
+            case JSON:
+                dumpFileJSON();
+                break;
+            case SERIALIZATE:
+                dumpFileSerializate();
+                break;
+            case CSV:
+                dumpFileCSV();
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported file type: " + etypefile);
         }
     }
 
     @Override
     public void loadFile(EtypeFile etypefile) {
         switch (etypefile) {
-            case TXT -> loadFilePlain();
-            case XML -> loadFileXML();
-            case JSON -> loadFileJSON();
-            case SERIALIZATE -> loadFileSerializate();
-            case CSV -> loadFileCSV();
+            case TXT:
+                loadFilePlain();
+                break;
+            case XML:
+                loadFileXML();
+                break;
+            case JSON:
+                loadFileJSON();
+                break;
+            case SERIALIZATE:
+                loadFileSerializate();
+                break;
+            case CSV:
+                loadFileCSV();
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported file type: " + etypefile);
         }
-
     }
 
     private void loadAllFiles() {
@@ -154,7 +180,7 @@ public class ManagementPersistenceTv extends FilePlain implements IActionFile {
         pathFileName.append(confValue.getNameFileTXT());
 
         List<String> records = new ArrayList<>();
-        for (Tv tv : listTv) {
+        for (TvDTO tv : listTv) {
             StringBuilder contentTv = new StringBuilder();
             contentTv.append(tv.getSerialNumber()).append(CommonConstants.SEMI_COLON);
             contentTv.append(tv.getResolution()).append(CommonConstants.SEMI_COLON);
@@ -178,7 +204,7 @@ public class ManagementPersistenceTv extends FilePlain implements IActionFile {
                 String sizeDisplay = tokens.nextToken().trim();
                 String technologyDisplay = tokens.nextToken().trim();
                 String systemOperational = tokens.nextToken().trim();
-                listTv.add(new Tv(serialNumber, resolution, sizeDisplay, technologyDisplay, systemOperational));
+                listTv.add(new TvDTO(serialNumber, resolution, sizeDisplay, technologyDisplay, systemOperational));
             }
         });
     }
@@ -186,9 +212,9 @@ public class ManagementPersistenceTv extends FilePlain implements IActionFile {
     private void dumpFileXML() {
         String filePath = confValue.getPath().concat(confValue.getNameFileXML());
         StringBuilder lines = new StringBuilder();
-        List<Tv> tvs = this.listTv.stream().collect(Collectors.toList());
+        List<TvDTO> tvs = this.listTv.stream().collect(Collectors.toList());
         lines.append("<XML version=\"1.0\" encoding=\"UTF-8\"> \n");
-        for (Tv tv : tvs) {
+        for (TvDTO tv : tvs) {
             lines.append("<tv>\n");
             lines.append("<serialNumber>").append(tv.getSerialNumber()).append("</serialNumber>\n");
             lines.append("<resolution>").append(tv.getResolution()).append("</resolution>\n");
@@ -217,7 +243,7 @@ public class ManagementPersistenceTv extends FilePlain implements IActionFile {
                         .trim();
                 String systemOperational = document.getElementsByTagName("systemOperational").item(i).getTextContent()
                         .trim();
-                listTv.add(new Tv(serialNumber, resolution, sizeDisplay, technologyDisplay, systemOperational));
+                listTv.add(new TvDTO(serialNumber, resolution, sizeDisplay, technologyDisplay, systemOperational));
             }
         } catch (Exception e) {
             System.out.println("Se presentó un error en el cargue del archivo XML");
@@ -297,7 +323,7 @@ public class ManagementPersistenceTv extends FilePlain implements IActionFile {
                 String systemOperational = jsonObject.optString("systemOperational", "");
 
                 // Agregar el objeto Tv creado a la lista
-                this.listTv.add(new Tv(serialNumber, resolution, sizeDisplay, technologyDisplay, systemOperational));
+                this.listTv.add(new TvDTO(serialNumber, resolution, sizeDisplay, technologyDisplay, systemOperational));
             }
         } catch (Exception e) {
             System.out.println("Error al procesar el archivo JSON: " + e.getMessage());
@@ -320,7 +346,7 @@ public class ManagementPersistenceTv extends FilePlain implements IActionFile {
         try (FileInputStream fileIn = new FileInputStream(
                 this.confValue.getPath().concat(this.confValue.getNameFileSer()));
                 ObjectInputStream in = new ObjectInputStream(fileIn)) {
-            this.listTv = (List<Tv>) in.readObject();
+            this.listTv = (List<TvDTO>) in.readObject();
         } catch (IOException i) {
             i.printStackTrace();
         } catch (ClassNotFoundException c) {
@@ -334,7 +360,7 @@ public class ManagementPersistenceTv extends FilePlain implements IActionFile {
         pathFileName.append(confValue.getNameFileCSV());
 
         List<String> records = new ArrayList<>();
-        for (Tv tv : listTv) {
+        for (TvDTO tv : listTv) {
             StringBuilder contentTv = new StringBuilder();
             contentTv.append(tv.getSerialNumber()).append(CommonConstants.SEMI_COLON);
             contentTv.append(tv.getResolution()).append(CommonConstants.SEMI_COLON);
@@ -359,7 +385,7 @@ public class ManagementPersistenceTv extends FilePlain implements IActionFile {
                 String sizeDisplay = tokens.nextToken().trim();
                 String technologyDisplay = tokens.nextToken().trim();
                 String systemOperational = tokens.nextToken().trim();
-                listTv.add(new Tv(serialNumber, resolution, sizeDisplay, technologyDisplay, systemOperational));
+                listTv.add(new TvDTO(serialNumber, resolution, sizeDisplay, technologyDisplay, systemOperational));
             }
 
         });
@@ -390,7 +416,7 @@ public class ManagementPersistenceTv extends FilePlain implements IActionFile {
     // Insertion Sort for Technology Display Ascending
     public void insertionSortTechnologyDisplay() {
         for (int i = 1; i < listTv.size(); i++) {
-            Tv key = listTv.get(i);
+            TvDTO key = listTv.get(i);
             int j = i - 1;
             while (j >= 0 && listTv.get(j).getTechnologyDisplay().compareTo(key.getTechnologyDisplay()) > 0) {
                 listTv.set(j + 1, listTv.get(j));
@@ -403,7 +429,7 @@ public class ManagementPersistenceTv extends FilePlain implements IActionFile {
     // Insertion Sort for Technology Display Descending
     public void insertionSortTechnologyDisplayDesc() {
         for (int i = 1; i < listTv.size(); i++) {
-            Tv key = listTv.get(i);
+            TvDTO key = listTv.get(i);
             int j = i - 1;
             while (j >= 0 && listTv.get(j).getTechnologyDisplay().compareTo(key.getTechnologyDisplay()) < 0) {
                 listTv.set(j + 1, listTv.get(j));
@@ -443,11 +469,11 @@ public class ManagementPersistenceTv extends FilePlain implements IActionFile {
         return NAME_TAG_TV;
     }
 
-    public List<Tv> getListTv() {
+    public List<TvDTO> getListTv() {
         return listTv;
     }
 
-    public void setListTv(List<Tv> listTv) {
+    public void setListTv(List<TvDTO> listTv) {
         this.listTv = listTv;
     }
 

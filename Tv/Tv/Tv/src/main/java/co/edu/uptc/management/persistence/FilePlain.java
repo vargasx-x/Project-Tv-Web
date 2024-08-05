@@ -1,7 +1,17 @@
 package co.edu.uptc.management.persistence;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+
 import co.edu.uptc.management.config.Config;
 import co.edu.uptc.management.constants.CommonConstants;
+
 
 public class FilePlain {
 	protected Config confValue;

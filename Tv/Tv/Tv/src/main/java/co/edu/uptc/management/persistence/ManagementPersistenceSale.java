@@ -1,5 +1,6 @@
 package co.edu.uptc.management.persistence;
 
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -8,40 +9,46 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
 import javax.swing.JOptionPane;
-import javax.xml.bind.Element;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;  // Asegúrate de importar de org.w3c.dom
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import co.edu.uptc.management.constants.CommonConstants;
 import co.edu.uptc.management.enums.EtypeFile;
 import co.edu.uptc.management.interfaces.IActionFile;
+import co.edu.uptc.management.tv.dto.SaleDTO;
+import co.edu.uptc.management.tv.dto.TvDTO;
 
 public class ManagementPersistenceSale extends FilePlain implements IActionFile {
     private final String NAME_TAG_SALE = "sale";
-    private List<Sale> listSale;
-    private ManagementTv managementTv; // Instancia de ManagementTv
+    private List<SaleDTO> listSale;
+    private ManagementPersistenceTv managementPersistenceTv; 
 
-    public ManagementPersistenceSale(ManagementTv managementTv) {
+    public ManagementPersistenceSale(ManagementPersistenceTv managementPersistenceTv) {
         this.listSale = new ArrayList<>();
-        this.managementTv = managementTv; // Inicializar ManagementTv
+        this.managementPersistenceTv = managementPersistenceTv; 
 
         loadAllFiles();
     }
 
-    public Tv findTvBySerialNumber(String serialNumber) {
-        return managementTv.findTvBySerialNumber(serialNumber);
+    public TvDTO findTvBySerialNumber(String serialNumber) {
+        // Implementar la búsqueda de TV según tu lógica
+        return managementPersistenceTv.getTv(serialNumber);
     }
 
-    public boolean insertSale(Sale sale) {
+    public boolean insertSale(SaleDTO sale) {
         if (!isDuplicateSale(sale)) {
             boolean success = listSale.add(sale);
             if (success) {
@@ -52,16 +59,16 @@ public class ManagementPersistenceSale extends FilePlain implements IActionFile 
         return false;
     }
 
-    public List<Sale> listAllSales() {
+    public List<SaleDTO> listAllSales() {
         return new ArrayList<>(listSale);
     }
 
     public boolean deleteSale(String serialNumber) {
         boolean success = false;
-        Iterator<Sale> iterator = listSale.iterator();
+        Iterator<SaleDTO> iterator = listSale.iterator();
 
         while (iterator.hasNext()) {
-            Sale sale = iterator.next();
+            SaleDTO sale = iterator.next();
             if (sale.getTelevisor().getSerialNumber().equals(serialNumber)) {
                 iterator.remove();
                 success = true;
@@ -76,8 +83,8 @@ public class ManagementPersistenceSale extends FilePlain implements IActionFile 
         return success;
     }
 
-    public Sale getSale(String serialNumber) {
-        for (Sale sale : listSale) {
+    public SaleDTO getSale(String serialNumber) {
+        for (SaleDTO sale : listSale) {
             if (sale.getTelevisor().getSerialNumber().equals(serialNumber)) {
                 return sale;
             }
@@ -85,7 +92,7 @@ public class ManagementPersistenceSale extends FilePlain implements IActionFile 
         return null;
     }
 
-    private void synchronizeAllFiles() {
+    public void synchronizeAllFiles() {
         dumpFile(EtypeFile.SALE_TXT);
         dumpFile(EtypeFile.SALE_XML);
         dumpFile(EtypeFile.SALE_JSON);
@@ -94,27 +101,51 @@ public class ManagementPersistenceSale extends FilePlain implements IActionFile 
     }
 
     @Override
-    public void dumpFile(EtypeFile etypefile) {
-        switch (etypefile) {
-            case SALE_TXT -> dumpFilePlain();
-            case SALE_XML -> dumpFileXML();
-            case SALE_JSON -> dumpFileJSON();
-            case SALE_SERIALIZATE -> dumpFileSerializate();
-            case SALE_CSV -> dumpFileCSV();
-        }
+public void dumpFile(EtypeFile etypefile) {
+    switch (etypefile) {
+        case SALE_TXT:
+            dumpFilePlain();
+            break;
+        case SALE_XML:
+            dumpFileXML();
+            break;
+        case SALE_JSON:
+            dumpFileJSON();
+            break;
+        case SALE_SERIALIZATE:
+            dumpFileSerializate();
+            break;
+        case SALE_CSV:
+            dumpFileCSV();
+            break;
+        default:
+            throw new IllegalArgumentException("Unsupported file type: " + etypefile);
     }
+}
 
-    @Override
-    public void loadFile(EtypeFile etypefile) {
-        switch (etypefile) {
-            case SALE_TXT -> loadFilePlain();
-            case SALE_XML -> loadFileXML();
-            case SALE_JSON -> loadFileJSON();
-            case SALE_SERIALIZATE -> loadFileSerializate();
-            case SALE_CSV -> loadFileCSV();
-        }
-
+@Override
+public void loadFile(EtypeFile etypefile) {
+    switch (etypefile) {
+        case SALE_TXT:
+            loadFilePlain();
+            break;
+        case SALE_XML:
+            loadFileXML();
+            break;
+        case SALE_JSON:
+            loadFileJSON();
+            break;
+        case SALE_SERIALIZATE:
+            loadFileSerializate();
+            break;
+        case SALE_CSV:
+            loadFileCSV();
+            break;
+        default:
+            throw new IllegalArgumentException("Unsupported file type: " + etypefile);
     }
+}
+
 
     private void loadAllFiles() {
         // Limpiar la lista de ventas antes de cargar desde los archivos
@@ -127,8 +158,8 @@ public class ManagementPersistenceSale extends FilePlain implements IActionFile 
         loadFile(EtypeFile.SALE_CSV);
     }
 
-    private boolean isDuplicateSale(Sale sale) {
-        for (Sale existingSale : listSale) {
+    private boolean isDuplicateSale(SaleDTO sale) {
+        for (SaleDTO existingSale : listSale) {
             if (existingSale.getIdSale().equals(sale.getIdSale())) {
                 return true;
             }
@@ -143,7 +174,7 @@ public class ManagementPersistenceSale extends FilePlain implements IActionFile 
         pathFileName.append(confValue.getNameFileSALE_TXT());
 
         List<String> records = new ArrayList<>();
-        for (Sale sale : listSale) {
+        for (SaleDTO sale : listSale) {
             StringBuilder contentSale = new StringBuilder();
 
             contentSale.append(sale.getIdSale()).append(CommonConstants.SEMI_COLON);
@@ -159,39 +190,41 @@ public class ManagementPersistenceSale extends FilePlain implements IActionFile 
     }
 
     private void loadFileXML() {
-        listSale.clear(); // Asegúrate de que la lista esté vacía antes de cargar nuevos datos
-
+        listSale.clear();
         try {
             File file = new File(confValue.getPath().concat(confValue.getNameFileSALE_XML()));
-            DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder documentBuilder = builderFactory.newDocumentBuilder();
+            DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
             Document document = documentBuilder.parse(file);
-            document.getDocumentElement().normalize(); // Normalizar el documento XML
-
-            NodeList list = document.getElementsByTagName(NAME_TAG_SALE);
-            for (int i = 0; i < list.getLength(); i++) {
-                Element saleElement = (Element) list.item(i);
-
-                String idSale = saleElement.getElementsByTagName("idSale").item(0).getTextContent().trim();
-                String serialNumber = saleElement.getElementsByTagName("serialNumber").item(0).getTextContent().trim();
-                String saleDate = saleElement.getElementsByTagName("saleDate").item(0).getTextContent().trim();
-                String salePrice = saleElement.getElementsByTagName("salePrice").item(0).getTextContent().trim();
-                String paymentMethod = saleElement.getElementsByTagName("paymentMethod").item(0).getTextContent()
-                        .trim();
-
-                Tv televisor = findTvBySerialNumber(serialNumber);
-
-                if (televisor != null) {
-                    Sale newSale = new Sale(idSale, televisor, saleDate, salePrice, paymentMethod);
-                    if (!isDuplicateSale(newSale)) {
-                        listSale.add(newSale);
+            document.getDocumentElement().normalize();
+    
+            NodeList nodeList = document.getElementsByTagName("sale");
+    
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                Node node = nodeList.item(i);
+    
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element element = (Element) node;
+    
+                    String idSale = element.getElementsByTagName("idSale").item(0).getTextContent();
+                    String serialNumber = element.getElementsByTagName("serialNumber").item(0).getTextContent();
+                    String saleDate = element.getElementsByTagName("saleDate").item(0).getTextContent();
+                    String salePrice = element.getElementsByTagName("salePrice").item(0).getTextContent();
+                    String paymentMethod = element.getElementsByTagName("paymentMethod").item(0).getTextContent();
+    
+                    TvDTO televisor = findTvBySerialNumber(serialNumber);
+    
+                    if (televisor != null) {
+                        SaleDTO newSale = new SaleDTO(idSale, televisor, saleDate, salePrice, paymentMethod);
+                        if (!isDuplicateSale(newSale)) {
+                            listSale.add(newSale);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null,
+                                "Televisor con número de serie " + serialNumber + " no encontrado.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
                     }
-                } else {
-                    JOptionPane.showMessageDialog(null,
-                            "Televisor con número de serie " + serialNumber + " no encontrado.",
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                    continue; // Continuar con el siguiente objeto en el NodeList
                 }
             }
         } catch (Exception e) {
@@ -199,7 +232,7 @@ public class ManagementPersistenceSale extends FilePlain implements IActionFile 
                     "Se presentó un error en el cargue del archivo XML: " + e.getMessage(),
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace(); // Manejo de excepciones específicas según tu necesidad
+            e.printStackTrace();
         }
     }
 
@@ -215,10 +248,10 @@ public class ManagementPersistenceSale extends FilePlain implements IActionFile 
                 String salePrice = tokens.nextToken().trim();
                 String paymentMethod = tokens.nextToken().trim();
 
-                Tv televisor = findTvBySerialNumber(serialNumber);
+                TvDTO televisor = findTvBySerialNumber(serialNumber);
 
                 if (televisor != null) {
-                    Sale newSale = new Sale(idSale, televisor, saleDate, salePrice, paymentMethod);
+                    SaleDTO newSale = new SaleDTO(idSale, televisor, saleDate, salePrice, paymentMethod);
                     if (!isDuplicateSale(newSale)) {
                         listSale.add(newSale);
                     }
@@ -237,9 +270,9 @@ public class ManagementPersistenceSale extends FilePlain implements IActionFile 
     private void dumpFileXML() {
         String filePath = confValue.getPath().concat(confValue.getNameFileSALE_XML());
         StringBuilder lines = new StringBuilder();
-        List<Sale> sales = this.listSale.stream().collect(Collectors.toList());
+        List<SaleDTO> sales = this.listSale.stream().collect(Collectors.toList());
         lines.append("<XML version=\"1.0\" encoding=\"UTF-8\"> \n");
-        for (Sale sale : sales) {
+        for (SaleDTO sale : sales) {
             lines.append("<sale>\n");
             lines.append("<idSale>" + sale.getIdSale() + "</idSale>\n");
             lines.append("<serialNumber>" + sale.getTelevisor().getSerialNumber() + "</serialNumber>\n");
@@ -321,10 +354,10 @@ public class ManagementPersistenceSale extends FilePlain implements IActionFile 
             String salePrice = jsonObject.optString("salePrice").trim();
             String paymentMethod = jsonObject.optString("paymentMethod").trim();
 
-            Tv televisor = findTvBySerialNumber(serialNumber);
+            TvDTO televisor = findTvBySerialNumber(serialNumber);
 
             if (televisor != null) {
-                Sale newSale = new Sale(idSale, televisor, saleDate, salePrice, paymentMethod);
+                SaleDTO newSale = new SaleDTO(idSale, televisor, saleDate, salePrice, paymentMethod);
                 if (!isDuplicateSale(newSale)) {
                     listSale.add(newSale);
                 }
@@ -358,7 +391,7 @@ public class ManagementPersistenceSale extends FilePlain implements IActionFile 
 
             // Verificar si el archivo tiene contenido antes de intentar leer
             if (fileIn.available() > 0) {
-                this.listSale = (List<Sale>) in.readObject();
+                this.listSale = (List<SaleDTO>) in.readObject();
             } else {
                 System.out.println("El archivo serializado está vacío.");
                 // Aquí puedes manejar el caso de archivo vacío según tu lógica de la aplicación
@@ -376,7 +409,7 @@ public class ManagementPersistenceSale extends FilePlain implements IActionFile 
         pathFileName.append(confValue.getNameFileSALE_CSV());
 
         List<String> records = new ArrayList<>();
-        for (Sale sale : listSale) {
+        for (SaleDTO sale : listSale) {
             StringBuilder contentSale = new StringBuilder();
             contentSale.append(sale.getIdSale()).append(CommonConstants.SEMI_COLON);
             contentSale.append(sale.getTelevisor().getSerialNumber()).append(CommonConstants.SEMI_COLON);
@@ -402,10 +435,10 @@ public class ManagementPersistenceSale extends FilePlain implements IActionFile 
                 String salePrice = tokens.nextToken().trim();
                 String paymentMethod = tokens.nextToken().trim();
 
-                Tv televisor = findTvBySerialNumber(serialNumber);
+                TvDTO televisor = findTvBySerialNumber(serialNumber);
 
                 if (televisor != null) {
-                    Sale newSale = new Sale(idSale, televisor, saleDate, salePrice, paymentMethod);
+                    SaleDTO newSale = new SaleDTO(idSale, televisor, saleDate, salePrice, paymentMethod);
                     if (!isDuplicateSale(newSale)) {
                         listSale.add(newSale);
                     }
@@ -424,11 +457,11 @@ public class ManagementPersistenceSale extends FilePlain implements IActionFile 
         return NAME_TAG_SALE;
     }
 
-    public List<Sale> getListSale() {
+    public List<SaleDTO> getListSale() {
         return listSale;
     }
 
-    public void setListSale(List<Sale> listSale) {
+    public void setListSale(List<SaleDTO> listSale) {
         this.listSale = listSale;
     }
 }

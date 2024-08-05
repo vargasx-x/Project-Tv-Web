@@ -1,5 +1,9 @@
 package co.edu.uptc.management.config;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 public class Config {
 
     private static Config config;
@@ -20,8 +24,12 @@ public class Config {
     private Config() {
         this.properties = new Properties();
         
-        try (FileInputStream entrada = new FileInputStream("resources/conf/app.config.properties1")) {
-            properties.load(entrada);
+         try (InputStream input = getClass().getClassLoader().getResourceAsStream("conf/app.config.properties1")) {
+            if (input == null) {
+                System.err.println("Lo siento, no se puede encontrar el archivo conf/app.config.properties1");
+                return;
+            }
+            properties.load(input);
             this.path = properties.getProperty("app.file.path.txt");
             this.nameFileTXT = properties.getProperty("app.file.name.txt");
             this.nameFileUSER_SER = properties.getProperty("app.file.name.user.ser");

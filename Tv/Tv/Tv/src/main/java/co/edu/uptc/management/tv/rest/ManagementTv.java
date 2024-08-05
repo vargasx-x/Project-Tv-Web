@@ -1,6 +1,7 @@
 package co.edu.uptc.management.tv.rest;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -22,30 +23,33 @@ public class ManagementTv {
 
     @GET
     @Path("/getTvs")
-    @Produces({MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_JSON })
     public List<TvDTO> getTvs() {
         return managementPersistenceTv.getListTv().stream()
-                .map(tv -> new TvDTO(tv.getSerialNumber(), tv.getResolution(), tv.getSizeDisplay(), tv.getTechnologyDisplay(), tv.getSystemOperational()))
-                .toList();
+                .map(tv -> new TvDTO(tv.getSerialNumber(), tv.getResolution(), tv.getSizeDisplay(),
+                        tv.getTechnologyDisplay(), tv.getSystemOperational()))
+                .collect(Collectors.toList());
     }
 
     @GET
     @Path("/getTvBySerialNumber")
-    @Produces({MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_JSON })
     public TvDTO getTvBySerialNumber(@QueryParam("serialNumber") String serialNumber) {
-        Tv tv = managementPersistenceTv.getTv(serialNumber);
+        TvDTO tv = managementPersistenceTv.getTv(serialNumber);
         if (tv != null) {
-            return new TvDTO(tv.getSerialNumber(), tv.getResolution(), tv.getSizeDisplay(), tv.getTechnologyDisplay(), tv.getSystemOperational());
+            return new TvDTO(tv.getSerialNumber(), tv.getResolution(), tv.getSizeDisplay(), tv.getTechnologyDisplay(),
+                    tv.getSystemOperational());
         }
         return null;
     }
 
     @POST
     @Path("/createTv")
-    @Produces({MediaType.APPLICATION_JSON})
-    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_JSON })
+    @Consumes({ MediaType.APPLICATION_JSON })
     public TvDTO createTv(TvDTO tvDTO) {
-        Tv tv = new Tv(tvDTO.getSerialNumber(), tvDTO.getResolution(), tvDTO.getSizeDisplay(), tvDTO.getTechnologyDisplay(), tvDTO.getSystemOperational());
+        TvDTO tv = new TvDTO(tvDTO.getSerialNumber(), tvDTO.getResolution(), tvDTO.getSizeDisplay(),
+                tvDTO.getTechnologyDisplay(), tvDTO.getSystemOperational());
         if (managementPersistenceTv.insertTv(tv)) {
             return tvDTO;
         }
@@ -54,10 +58,11 @@ public class ManagementTv {
 
     @PUT
     @Path("/updateTv")
-    @Produces({MediaType.APPLICATION_JSON})
-    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_JSON })
+    @Consumes({ MediaType.APPLICATION_JSON })
     public TvDTO updateTv(TvDTO tvDTO) {
-        Tv updatedTv = new Tv(tvDTO.getSerialNumber(), tvDTO.getResolution(), tvDTO.getSizeDisplay(), tvDTO.getTechnologyDisplay(), tvDTO.getSystemOperational());
+        TvDTO updatedTv = new TvDTO(tvDTO.getSerialNumber(), tvDTO.getResolution(), tvDTO.getSizeDisplay(),
+                tvDTO.getTechnologyDisplay(), tvDTO.getSystemOperational());
         if (managementPersistenceTv.updateTv(updatedTv)) {
             return tvDTO;
         }
@@ -66,11 +71,12 @@ public class ManagementTv {
 
     @DELETE
     @Path("/deleteTv")
-    @Produces({MediaType.APPLICATION_JSON})
+    @Produces({ MediaType.APPLICATION_JSON })
     public TvDTO deleteTv(@QueryParam("serialNumber") String serialNumber) {
-        Tv tv = managementPersistenceTv.getTv(serialNumber);
+        TvDTO tv = managementPersistenceTv.getTv(serialNumber);
         if (tv != null && managementPersistenceTv.deleteTv(serialNumber)) {
-            return new TvDTO(tv.getSerialNumber(), tv.getResolution(), tv.getSizeDisplay(), tv.getTechnologyDisplay(), tv.getSystemOperational());
+            return new TvDTO(tv.getSerialNumber(), tv.getResolution(), tv.getSizeDisplay(), tv.getTechnologyDisplay(),
+                    tv.getSystemOperational());
         }
         return null;
     }

@@ -4,16 +4,16 @@ import java.io.Serializable;
 
 public class SaleDTO implements Serializable {
 	private String idSale;
-	private Tv televisor;
+	private TvDTO televisor;
 	private String saleDate;
 	private String salePrice;
 
 	private String paymentMethod;
 
-	public Sale() {
+	public SaleDTO() {
     }
 
-	public Sale(String idSale, Tv televisor, String saleDate, String salePrice, String paymentMethod) {
+	public SaleDTO(String idSale, TvDTO televisor, String saleDate, String salePrice, String paymentMethod) {
         this.idSale = idSale;
         this.televisor = televisor;
         this.saleDate = saleDate;
@@ -29,11 +29,11 @@ public class SaleDTO implements Serializable {
 		this.idSale = idSale;
 	}
 
-	public Tv getTelevisor() {
+	public TvDTO getTelevisor() {
 		return televisor;
 	}
 
-	public void setTelevisor(Tv televisor) {
+	public void setTelevisor(TvDTO televisor) {
 		this.televisor = televisor;
 	}
 
