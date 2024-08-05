@@ -1,52 +1,63 @@
-*{
-    margin: 0; /*Elimina el margen predeterminado para todos los elementos*/ 
-    padding: 0; /*Elimina el relleno predeterminado para todos los elementos*/
+* {
+    margin: 0; /* Elimina el margen predeterminado para todos los elementos */ 
+    padding: 0; /* Elimina el relleno predeterminado para todos los elementos */
 }
 
-.form-login{
+.form-login {
     width: 350px;
-    height: 400px;
     background-color: blue;
-    padding-top: 20px;
+    padding: 20px;
     margin: 50px auto;
     border-top-right-radius: 20px;
     border-bottom-left-radius: 20px;
     box-shadow: -10px 20px 15px 10px gray;
 }
 
-h1{
+h1 {
     color: black;
     text-align: center;
-    margin-top: 20px;
     margin-bottom: 30px;
 }
 
-input{ /*Selector de componentes*/
-    font-size: 16px;/*Tamaño de fuente*/
-    padding: 8px;/*Espaciado por todos los sentidos*/
-    display: block;/*Lo referencia como un bloque para hacer q ocupe toda la linea*/
-    margin: 15px auto;/*Centrar el componente con las margenes*/
+input[type="text"], input[type="password"] {
+    font-size: 16px; /* Tamaño de fuente */
+    padding: 8px; /* Espaciado por todos los sentidos */
+    display: block; /* Lo referencia como un bloque para hacer que ocupe toda la línea */
+    margin: 15px auto; /* Centra el componente con márgenes */
+    width: calc(100% - 16px); /* Ajusta el ancho del input */
 }
 
 label {
-    color: white;/*Establece el color de la etiquetas*/
-    display: block;/*Hace de las etiquetas un bloque*/
-    margin: 15px;/*Añade una margen a las etiquetas*/
-    font-size: 20px;/*Establece el tamaño de las fuentes de las etiquetas*/
+    color: white; /* Establece el color de las etiquetas */
+    display: block; /* Hace de las etiquetas un bloque */
+    margin: 15px 0; /* Añade un margen vertical a las etiquetas */
+    font-size: 20px; /* Establece el tamaño de las fuentes de las etiquetas */
     font-weight: bold;
     text-align: center;
 }
 
-input[type="button"] {
-    width: 100px;
+input[type="submit"], .btn-register {
+    width: 100%;
     margin-top: 20px;
-    font-size: 20px;
+    font-size: 16px;
+    padding: 10px;
+    background-color: gray; /* Color del botón */
+    color: white; /* Color del texto del botón */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer; /* Cambia la forma del cursor */
     display: block;
-    background-color: gray;/*Color del boton*/
-    cursor: pointer; /*Cambia la forma del cursor*/
+    text-align: center;
 }
 
-input[type="button"]:hover {
-    background-color: aqua;/*Cambia el color del boton cuando se le coloca el cursor encima*/
+input[type="submit"]:hover, .btn-register:hover {
+    background-color: aqua; /* Cambia el color del botón cuando se le coloca el cursor encima */
 }
 
+.btn-register {
+    background-color: #007BFF;
+}
+
+.btn-register:hover {
+    background-color: #0056b3;
+}

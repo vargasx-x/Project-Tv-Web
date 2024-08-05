@@ -1,13 +1,13 @@
 package co.edu.uptc.management.tv.rest;
 
 import java.util.Objects;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-
+import javax.ws.rs.core.Response;
 import co.edu.uptc.management.config.Config;
 import co.edu.uptc.management.persistence.ManagementPersistenceUser;
 import co.edu.uptc.management.tv.dto.UserDTO;
@@ -64,5 +64,30 @@ public class ManagementUser {
             e.printStackTrace();
         }
         return !Objects.isNull(usuarioEncontrado);
+    }
+    
+    @POST
+    @Path("/addUser")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addUser(UserDTO userDTO) {
+        if (managementListUtils == null || userDTO == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Invalid user data").build();
+        }
+
+        try {
+            // Añadir el nuevo usuario a la lista
+            managementListUtils.getListObjects().add(userDTO);
+
+            // Volver a ordenar la lista si es necesario
+            managementListUtils.sortList("nameUser");
+
+            // Persistir los cambios
+            managementPersistenceUser.saveFileSerializate(); // Asumiendo que este método guarda los cambios
+            
+            return Response.status(Response.Status.OK).entity("User added successfully").build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An error occurred while adding the user").build();
+        }
     }
 }
