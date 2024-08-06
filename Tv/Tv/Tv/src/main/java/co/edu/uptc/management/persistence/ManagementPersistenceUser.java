@@ -14,14 +14,15 @@ import java.util.Map;
 import co.edu.uptc.management.tv.dto.UserDTO;
 
 public class ManagementPersistenceUser extends FilePlain {
-    private Map<String, String> userMap = new HashMap<>();
+    private Map<String, String> userMap;
     private String filePath;
 
     public ManagementPersistenceUser() {
         this.filePath = "C:/Users/Juan Vargas/Downloads/Tv/Tv/Tv/Tv/src/main/resources/data/User.ser";
-;
+        userMap = new HashMap<>();
         loadFileSerializate();
     }
+
     public boolean insertUser(UserDTO user) {
         if (userMap.containsKey(user.getNameUser())) {
             System.out.println("El usuario ya existe: " + user.getNameUser());
@@ -32,7 +33,6 @@ public class ManagementPersistenceUser extends FilePlain {
         dumpFileSerializate(); // Save changes to the persistent storage
         return true;
     }
-    
 
     private void dumpFileSerializate() {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filePath))) {
@@ -42,24 +42,33 @@ public class ManagementPersistenceUser extends FilePlain {
             e.printStackTrace();
         }
     }
-    
 
     @SuppressWarnings("unchecked")
-  
-private void loadFileSerializate() {
-    File file = new File(filePath);
-    if (!file.exists()) {
-        System.out.println("Archivo de usuarios no encontrado.");
-        return;
-    }
-    try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filePath))) {
-        userMap = (Map<String, String>) in.readObject();
-        System.out.println("Usuarios cargados correctamente: " + userMap);
-    } catch (IOException | ClassNotFoundException e) {
-        e.printStackTrace();
-    }
-}
 
+    private void loadFileSerializate() {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            System.out.println("Archivo de usuarios no encontrado.");
+            return;
+        }
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filePath))) {
+            userMap = (Map<String, String>) in.readObject();
+            System.out.println("Usuarios cargados correctamente: " + userMap);
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean deleteUser(String nameUser) {
+        if (userMap.containsKey(nameUser)) {
+            userMap.remove(nameUser);
+            dumpFileSerializate(); // Save changes to the persistent storage
+            System.out.println("Usuario eliminado: " + nameUser);
+            return true;
+        }
+        return false;
+    }
+    
 
     public List<UserDTO> getListUserDTO() {
         List<UserDTO> userList = new ArrayList<>();

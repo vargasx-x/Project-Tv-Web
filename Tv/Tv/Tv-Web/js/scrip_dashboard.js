@@ -51,10 +51,9 @@ document.addEventListener("DOMContentLoaded", function () {
     function loadUsersSection(content) {
         const addCard = createCard('./adduser.html', 'Agregar Usuario', 'resources/icons/agregar-usuario.png');
         const viewCard = createCard('./viewusers.html', 'Ver Usuarios', 'resources/icons/ver-usuario.png');
-        const deleteCard = createCard('./deleteuser.html', 'Eliminar Usuario', 'resources/icons/eliminar-usuario.png');
-        content.appendChild(addCard);
+       content.appendChild(addCard);
         content.appendChild(viewCard);
-        content.appendChild(deleteCard);
+        
     }
 
     function createCard(href, text, imgSrc) {

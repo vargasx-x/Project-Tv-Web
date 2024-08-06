@@ -1,8 +1,10 @@
 package co.edu.uptc.management.tv.rest;
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -68,5 +70,25 @@ public class ManagementUser {
                 .entity("Error al agregar el usuario.")
                 .build();
     }
+
+    @GET
+    @Path("/getUsers")
+    @Produces({ MediaType.APPLICATION_JSON })
+    public List<UserDTO> getUsers() {
+        return managementPersistenceUser.getListUserDTO();
+    }
+
+    @DELETE
+    @Path("/deleteUser")
+    public Response deleteUser(@QueryParam("nameUser") String nameUser) {
+        // Lógica para eliminar el usuario
+        boolean deleted = managementPersistenceUser.deleteUser(nameUser);
+        if (deleted) {
+            return Response.ok().build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+    
 
 }
