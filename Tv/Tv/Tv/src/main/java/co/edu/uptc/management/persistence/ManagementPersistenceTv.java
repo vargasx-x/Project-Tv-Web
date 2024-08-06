@@ -3,6 +3,7 @@ package co.edu.uptc.management.persistence;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -25,6 +26,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 
 import co.edu.uptc.management.constants.CommonConstants;
 import co.edu.uptc.management.enums.EtypeFile;
@@ -62,7 +64,7 @@ public class ManagementPersistenceTv extends FilePlain implements IActionFile {
 
     }
 
-    private boolean isDuplicateTv(TvDTO tv) {
+    public boolean isDuplicateTv(TvDTO tv) {
         for (TvDTO existingTv : listTv) {
             if (existingTv.getSerialNumber().equals(tv.getSerialNumber())) {
                 return true;
@@ -116,7 +118,7 @@ public class ManagementPersistenceTv extends FilePlain implements IActionFile {
         return null;
     }
 
-    private void synchronizeAllFiles() {
+    public void synchronizeAllFiles() {
         dumpFile(EtypeFile.TXT);
         dumpFile(EtypeFile.XML);
         dumpFile(EtypeFile.JSON);
@@ -170,7 +172,7 @@ public class ManagementPersistenceTv extends FilePlain implements IActionFile {
         }
     }
 
-    private void loadAllFiles() {
+    public void loadAllFiles() {
         loadFile(EtypeFile.TXT);
         loadFile(EtypeFile.XML);
         loadFile(EtypeFile.JSON);
@@ -178,7 +180,7 @@ public class ManagementPersistenceTv extends FilePlain implements IActionFile {
         loadFile(EtypeFile.CSV);
     }
 
-    private void dumpFilePlain() {
+    public void dumpFilePlain() {
         StringBuilder pathFileName = new StringBuilder();
         pathFileName.append(confValue.getPath());
         pathFileName.append(confValue.getNameFileTXT());
@@ -197,7 +199,7 @@ public class ManagementPersistenceTv extends FilePlain implements IActionFile {
         this.writer(pathFileName.toString(), records);
     }
 
-    private void loadFilePlain() {
+    public void loadFilePlain() {
         listTv.clear();
         List<String> contentInLine = this.reader(confValue.getPath().concat(confValue.getNameFileTXT()));
         contentInLine.forEach(row -> {
@@ -213,7 +215,7 @@ public class ManagementPersistenceTv extends FilePlain implements IActionFile {
         });
     }
 
-    private void dumpFileXML() {
+    public void dumpFileXML() {
         String filePath = confValue.getPath().concat(confValue.getNameFileXML());
         StringBuilder lines = new StringBuilder();
         List<TvDTO> tvs = this.listTv.stream().collect(Collectors.toList());
@@ -254,112 +256,57 @@ public class ManagementPersistenceTv extends FilePlain implements IActionFile {
         }
     }
 
-    private void dumpFileJSON() {
-        // Obtén la ruta completa del archivo JSON
+    public void dumpFileJSON() {
         String filePath = confValue.getPath().concat(confValue.getNameFileJSON());
-        StringBuilder stringJSON = new StringBuilder();
-
-        try {
-            // Inicia el arreglo JSON
-            stringJSON.append("[\n");
-
-            // Itera sobre la lista de televisores
-            for (int i = 0; i < this.listTv.size(); i++) {
-                stringJSON.append("{\n");
-                stringJSON.append("\"serialNumber\" : \"").append(listTv.get(i).getSerialNumber()).append("\",\n");
-                stringJSON.append("\"resolution\" : \"").append(listTv.get(i).getResolution()).append("\",\n");
-                stringJSON.append("\"sizeDisplay\" : \"").append(listTv.get(i).getSizeDisplay()).append("\",\n");
-                stringJSON.append("\"technologyDisplay\" : \"").append(listTv.get(i).getTechnologyDisplay())
-                        .append("\",\n");
-                stringJSON.append("\"systemOperational\" : \"").append(listTv.get(i).getSystemOperational())
-                        .append("\"\n");
-                stringJSON.append("}");
-
-                // Agrega una coma después de cada objeto, excepto el último
-                if (i < listTv.size() - 1) {
-                    stringJSON.append(",\n");
-                } else {
-                    stringJSON.append("\n");
-                }
-            }
-
-            // Cierra el arreglo JSON
-            stringJSON.append("]");
-
-            // Escribe el archivo utilizando try-with-resources para asegurar el cierre
-            // adecuado del recurso
-            try (FileWriter fileWriter = new FileWriter(filePath)) {
-                fileWriter.write(stringJSON.toString());
-            } catch (IOException e) {
-                System.err.println("Error al escribir el archivo JSON: " + e.getMessage());
-            }
-        } catch (Exception e) {
-            System.err.println("Error al generar el JSON: " + e.getMessage());
+        try (FileWriter fileWriter = new FileWriter(filePath)) {
+            Gson gson = new Gson();
+            gson.toJson(listTv, fileWriter);
+        } catch (IOException e) {
+            System.err.println("Error al escribir el archivo JSON: " + e.getMessage());
         }
     }
 
     public void loadFileJSON() {
-    StringBuilder filename = new StringBuilder();
-    filename.append(this.confValue.getPath());
-    filename.append(this.confValue.getNameFileJSON());
-    String content = this.readFile(filename.toString()).trim();
+    String filePath = confValue.getPath().concat(confValue.getNameFileJSON());
+    try (FileReader fileReader = new FileReader(filePath)) {
+        JsonArray jsonArray = JsonParser.parseReader(fileReader).getAsJsonArray();
+        listTv.clear(); // Asegúrate de limpiar la lista antes de llenarla
 
-    // Verificar si el contenido está vacío
-    if (content.isEmpty()) {
-        System.out.println("El archivo JSON está vacío.");
-        return;
-    }
-
-    // Crear un objeto Gson para parsear el contenido
-    Gson gson = new Gson();
-    try {
-        // Parsear el contenido JSON a un JsonArray
-        JsonArray jsonArray = gson.fromJson(content, JsonArray.class);
-
-        // Iterar sobre cada objeto en el JsonArray
         for (JsonElement element : jsonArray) {
             JsonObject jsonObject = element.getAsJsonObject();
-
-            // Obtener los valores de cada campo
-            String serialNumber = jsonObject.has("serialNumber") ? jsonObject.get("serialNumber").getAsString().trim() : "";
-            String resolution = jsonObject.has("resolution") ? jsonObject.get("resolution").getAsString().trim() : "";
-            String sizeDisplay = jsonObject.has("sizeDisplay") ? jsonObject.get("sizeDisplay").getAsString().trim() : "";
-            String technologyDisplay = jsonObject.has("technologyDisplay") ? jsonObject.get("technologyDisplay").getAsString().trim() : "";
-            String systemOperational = jsonObject.has("systemOperational") ? jsonObject.get("systemOperational").getAsString().trim() : "";
-
-            // Crear y agregar el objeto TvDTO a la lista
-            this.listTv.add(new TvDTO(serialNumber, resolution, sizeDisplay, technologyDisplay, systemOperational));
+            TvDTO tv = new TvDTO(
+                    jsonObject.get("serialNumber").getAsString().trim(),
+                    jsonObject.get("resolution").getAsString().trim(),
+                    jsonObject.get("sizeDisplay").getAsString().trim(),
+                    jsonObject.get("technologyDisplay").getAsString().trim(),
+                    jsonObject.get("systemOperational").getAsString().trim()
+            );
+            listTv.add(tv);
         }
-    } catch (JsonParseException e) {
-        System.out.println("Error al procesar el archivo JSON: " + e.getMessage());
-        e.printStackTrace(); // Manejo de excepciones específicas según tu necesidad
+    } catch (IOException | JsonParseException e) {
+        System.err.println("Error al cargar el archivo JSON: " + e.getMessage());
     }
 }
 
-    private void dumpFileSerializate() {
-        try (FileOutputStream fileOut = new FileOutputStream(
-                this.confValue.getPath().concat(this.confValue.getNameFileSer()));
-                ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
-            out.writeObject(this.listTv);
+    public void dumpFileSerializate() {
+        String filePath = confValue.getPath().concat(confValue.getNameFileSer());
+        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(filePath))) {
+            objectOutputStream.writeObject(listTv);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Error al escribir el archivo serializado: " + e.getMessage());
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private void loadFileSerializate() {
-        try (FileInputStream fileIn = new FileInputStream(
-                this.confValue.getPath().concat(this.confValue.getNameFileSer()));
-                ObjectInputStream in = new ObjectInputStream(fileIn)) {
-            this.listTv = (List<TvDTO>) in.readObject();
-        } catch (IOException i) {
-            i.printStackTrace();
-        } catch (ClassNotFoundException c) {
-            c.printStackTrace();
+    public void loadFileSerializate() {
+        String filePath = confValue.getPath().concat(confValue.getNameFileSer());
+        try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(filePath))) {
+            listTv = (List<TvDTO>) objectInputStream.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Error al cargar el archivo serializado: " + e.getMessage());
         }
     }
 
-    private void dumpFileCSV() {
+    public void dumpFileCSV() {
         StringBuilder pathFileName = new StringBuilder();
         pathFileName.append(confValue.getPath());
         pathFileName.append(confValue.getNameFileCSV());
@@ -379,7 +326,7 @@ public class ManagementPersistenceTv extends FilePlain implements IActionFile {
         this.writer(pathFileName.toString(), records);
     }
 
-    private void loadFileCSV() {
+    public void loadFileCSV() {
         listTv.clear();
         List<String> contentInLine = this.reader(confValue.getPath().concat(confValue.getNameFileCSV()));
         contentInLine.forEach(row -> {
@@ -475,6 +422,7 @@ public class ManagementPersistenceTv extends FilePlain implements IActionFile {
     }
 
     public List<TvDTO> getListTv() {
+        
         return listTv;
     }
 

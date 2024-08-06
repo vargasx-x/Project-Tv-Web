@@ -15,14 +15,13 @@ public class TvDTO implements Serializable {
 	public TvDTO() {
 	}
 
-	public TvDTO(String serialNumber, String resolution, String sizeDisplay, String technologyDisplay,
-			String systemOperational) {
-		this.serialNumber = serialNumber;
-		this.resolution = resolution;
-		this.sizeDisplay = sizeDisplay;
-		this.technologyDisplay = technologyDisplay;
-		this.systemOperational = systemOperational;
-	}
+	public TvDTO(String serialNumber, String resolution, String sizeDisplay, String technologyDisplay, String systemOperational) {
+        this.serialNumber = serialNumber;
+        this.resolution = resolution;
+        this.sizeDisplay = sizeDisplay;
+        this.technologyDisplay = technologyDisplay;
+        this.systemOperational = systemOperational;
+    }
 
 	public String getSerialNumber() {
 		return serialNumber;

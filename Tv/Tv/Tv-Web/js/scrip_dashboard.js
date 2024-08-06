@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function loadUsersSection(content) {
         const addCard = createCard('./adduser.html', 'Agregar Usuario', 'resources/icons/agregar-usuario.png');
         const viewCard = createCard('./viewusers.html', 'Ver Usuarios', 'resources/icons/ver-usuario.png');
-       content.appendChild(addCard);
+        content.appendChild(addCard);
         content.appendChild(viewCard);
         
     }

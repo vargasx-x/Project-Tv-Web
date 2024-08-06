@@ -12,19 +12,25 @@
         <div class="card add">
             <div class="card-body">
                 <h5 class="card-title">Agregar Venta</h5>
-                <div class="form-group">
-                    <label for="input-sale-code">Código de la venta</label>
-                    <input type="text" class="form-control" id="input-sale-code">
-                </div>
-                <div class="form-group">
-                    <label for="input-tv-code-sale">Código del televisor</label>
-                    <input type="text" class="form-control" id="input-tv-code-sale">
-                </div>
-                <div class="form-group">
-                    <label for="input-customer-sale">Nombre del cliente</label>
-                    <input type="text" class="form-control" id="input-customer-sale">
-                </div>
-                <button id="add-sale-button" type="submit" class="btn btn-outline-primary">Añadir Venta</button>
+                <form id="add-sale-form">
+                    <div class="form-group">
+                        <label for="input-sale-id">ID de la Venta</label>
+                        <input type="text" class="form-control" id="input-sale-id" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="input-tv-code">Código del Televisor</label>
+                        <input type="text" class="form-control" id="input-tv-code" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="input-sale-date">Fecha de la Venta</label>
+                        <input type="date" class="form-control" id="input-sale-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="input-sale-price">Precio de la Venta</label>
+                        <input type="number" class="form-control" id="input-sale-price" step="0.01" required>
+                    </div>
+                    <button id="add-sale-button" type="submit" class="btn btn-outline-primary">Añadir Venta</button>
+                </form>
             </div>
         </div>
     </div>
