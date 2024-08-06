@@ -19,38 +19,47 @@ public class ManagementPersistenceUser extends FilePlain {
 
     public ManagementPersistenceUser() {
         this.filePath = "C:/Users/Juan Vargas/Downloads/Tv/Tv/Tv/Tv/src/main/resources/data/User.ser";
+;
         loadFileSerializate();
     }
-
     public boolean insertUser(UserDTO user) {
         if (userMap.containsKey(user.getNameUser())) {
+            System.out.println("El usuario ya existe: " + user.getNameUser());
             return false; // The user already exists
         }
         userMap.put(user.getNameUser(), user.getPassword());
+        System.out.println("Usuario agregado: " + user.getNameUser());
         dumpFileSerializate(); // Save changes to the persistent storage
         return true;
     }
+    
 
     private void dumpFileSerializate() {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filePath))) {
             out.writeObject(userMap);
+            System.out.println("Archivo de usuarios guardado correctamente.");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+    
 
     @SuppressWarnings("unchecked")
-    private void loadFileSerializate() {
-        File file = new File(filePath);
-        if (!file.exists()) {
-            return;
-        }
-        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filePath))) {
-            userMap = (Map<String, String>) in.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+  
+private void loadFileSerializate() {
+    File file = new File(filePath);
+    if (!file.exists()) {
+        System.out.println("Archivo de usuarios no encontrado.");
+        return;
     }
+    try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filePath))) {
+        userMap = (Map<String, String>) in.readObject();
+        System.out.println("Usuarios cargados correctamente: " + userMap);
+    } catch (IOException | ClassNotFoundException e) {
+        e.printStackTrace();
+    }
+}
+
 
     public List<UserDTO> getListUserDTO() {
         List<UserDTO> userList = new ArrayList<>();

@@ -9,6 +9,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import co.edu.uptc.management.persistence.ManagementPersistenceUser;
 import co.edu.uptc.management.tv.dto.UserDTO;
@@ -23,8 +24,8 @@ public class ManagementUser {
         managementListUtils = new ManagementListUtils<>(
                 managementPersistenceUser.getListUserDTO());
         try {
-          /* Asignamos el nombre del atributo por los atributos que deseamos ordenar */
-			managementListUtils.sortList("nameUser", "password");
+            /* Asignamos el nombre del atributo por los atributos que deseamos ordenar */
+            managementListUtils.sortList("nameUser", "password");
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
             System.out.println("No se encontró el nombre del atributo en la clase");
             e.printStackTrace();
@@ -50,10 +51,22 @@ public class ManagementUser {
     @Path("/createUser")
     @Produces({ MediaType.APPLICATION_JSON })
     @Consumes({ MediaType.APPLICATION_JSON })
-    public UserDTO createUser(UserDTO userDTO) {
-        if (managementPersistenceUser.insertUser(userDTO)) {
-            return userDTO; // Return the user if added successfully
+    public Response createUser(UserDTO userDTO) {
+        // Verificar si el nombre de usuario ya existe en el mapa
+        if (managementPersistenceUser.getUserMap().containsKey(userDTO.getNameUser())) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("El nombre de usuario ya existe.")
+                    .build();
         }
-        return null; // Return null if user already exists or could not be added
+
+        // Agregar el nuevo usuario
+        if (managementPersistenceUser.insertUser(userDTO)) {
+            return Response.ok(userDTO).build();
+        }
+
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .entity("Error al agregar el usuario.")
+                .build();
     }
+
 }
