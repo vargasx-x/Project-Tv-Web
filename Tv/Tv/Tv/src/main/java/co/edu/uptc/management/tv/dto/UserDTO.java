@@ -4,13 +4,13 @@ public class UserDTO {
     private String nameUser;
     private String password;
 
-    // Constructor
+    public UserDTO() {}
+
     public UserDTO(String nameUser, String password) {
         this.nameUser = nameUser;
         this.password = password;
     }
 
-    // Getters y setters
     public String getNameUser() {
         return nameUser;
     }
