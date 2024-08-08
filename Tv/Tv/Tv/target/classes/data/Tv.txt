@@ -12,4 +12,3 @@
 DSGDFG;720;345;AMOLED;Android
 et65gergt;789;456;OLED;Apple
 aaaaaaaaaa;4k;1290;ANON;PL
-bbbbbbbb;123124;243;2342;2432

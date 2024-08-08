@@ -1,10 +1,26 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style_crud.css">
     <title>Eliminar Venta</title>
 </head>
 <body>
-    
+    <div class="container mt-5">
+        <div class="card delete">
+            <div class="card-body">
+                <h5 class="card-title">Eliminar Venta</h5>
+                <div class="form-group">
+                    <label for="input-sale-code-delete">Código de la Venta</label>
+                    <input type="text" class="form-control" id="input-sale-code-delete" placeholder="Ingrese el código de la venta">
+                </div>
+                <button id="delete-sale-button" type="submit" class="btn btn-outline-danger">Eliminar Venta</button>
+            </div>
+        </div>
+    </div>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/deleteSale.js"></script>
 </body>
 </html>

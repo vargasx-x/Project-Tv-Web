@@ -2,7 +2,6 @@ package co.edu.uptc.management.tv.rest;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -14,137 +13,114 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import co.edu.uptc.management.enums.EtypeFile;
 import co.edu.uptc.management.persistence.ManagementPersistenceSale;
-import co.edu.uptc.management.persistence.ManagementPersistenceTv;
 import co.edu.uptc.management.tv.dto.SaleDTO;
 import co.edu.uptc.management.tv.dto.TvDTO;
 
 @Path("/ManagementSale")
 public class ManagementSale {
 
-	public static ManagementPersistenceSale managementPersistenceSale = new ManagementPersistenceSale(
-			new ManagementPersistenceTv());
+    public static ManagementPersistenceSale managementPersistenceSale = new ManagementPersistenceSale();
 
-	static {
-		managementPersistenceSale.loadFile(EtypeFile.SALE_TXT);
-		managementPersistenceSale.loadFile(EtypeFile.SALE_XML);
-		managementPersistenceSale.loadFile(EtypeFile.SALE_JSON);
-		managementPersistenceSale.loadFile(EtypeFile.SALE_CSV);
-		managementPersistenceSale.loadFile(EtypeFile.SALE_SERIALIZATE);
-	}
+    static {
+        managementPersistenceSale.loadFilePlain("/data/Sale.txt");
+    }
 
-	@GET
-	@Path("/getSales")
-	@Produces({ MediaType.APPLICATION_JSON })
-	public List<SaleDTO> getSales() {
-		return managementPersistenceSale.listAllSales().stream()
-				.map(sale -> new SaleDTO(
-						sale.getIdSale(),
-						sale.getTelevisor(), // Esto debería ser un TvDTO
-						sale.getSaleDate(),
-						sale.getSalePrice(),
-						sale.getPaymentMethod()))
-				.collect(Collectors.toList());
-	}
+    @GET
+    @Path("/getSales")
+    @Produces({ MediaType.APPLICATION_JSON })
+    public List<SaleDTO> getSales() {
+        return managementPersistenceSale.getListSale();
+    }
 
-	@GET
-	@Path("/getSaleById")
-	@Produces({ MediaType.APPLICATION_JSON })
-	public SaleDTO getSaleById(@QueryParam("idSale") String idSale) {
-		SaleDTO sale = managementPersistenceSale.getSale(idSale);
-		if (sale != null) {
-			// Usar el constructor de SaleDTO que acepta TvDTO
-			return new SaleDTO(
-					sale.getIdSale(),
-					sale.getTelevisor(), // Esto debería devolver un TvDTO
-					sale.getSaleDate(),
-					sale.getSalePrice(),
-					sale.getPaymentMethod());
-		}
-		return null; // o lanzar una excepción si prefieres
-	}
+    @GET
+    @Path("/getSaleById")
+    @Produces({ MediaType.APPLICATION_JSON })
+    public SaleDTO getSaleById(@QueryParam("idSale") String idSale) {
+        for (SaleDTO sale : managementPersistenceSale.getListSale()) {
+            if (sale.getIdSale().equals(idSale)) {
+                return sale;
+            }
+        }
+        return null; // or throw a custom exception if preferred
+    }
 
-	@POST
-	@Path("/createSale")
-	@Produces({ MediaType.APPLICATION_JSON })
-	@Consumes({ MediaType.APPLICATION_JSON })
-	public SaleDTO createSale(SaleDTO saleDTO) {
-		TvDTO televisor = managementPersistenceSale.findTvBySerialNumber(saleDTO.getTelevisor().getSerialNumber());
-		if (televisor != null) {
-			SaleDTO sale = new SaleDTO(saleDTO.getIdSale(), televisor, saleDTO.getSaleDate(), saleDTO.getSalePrice(),
-					saleDTO.getPaymentMethod());
-			if (managementPersistenceSale.insertSale(sale)) {
-				managementPersistenceSale.synchronizeAllFiles(); // Sincroniza todos los formatos
-				return saleDTO;
-			}
-		}
-		return null;
-	}
+    @POST
+    @Path("/createSale")
+    @Produces({ MediaType.APPLICATION_JSON })
+    @Consumes({ MediaType.APPLICATION_JSON })
+    public SaleDTO createSale(SaleDTO saleDTO) {
+        TvDTO televisor = saleDTO.getTelevisor();
+        // Ensure the TV exists before creating the sale
+        if (televisor != null && televisor.getSerialNumber() != null) {
+            SaleDTO newSale = new SaleDTO(saleDTO.getIdSale(), televisor, saleDTO.getSaleDate(), saleDTO.getSalePrice(),
+                    saleDTO.getPaymentMethod());
+            if (managementPersistenceSale.getListSale().add(newSale)) {
+                managementPersistenceSale.dumpFilePlain("/data/Sale.txt");
+                return newSale;
+            }
+        }
+        return null;
+    }
 
-	@PUT
-	@Path("/updateSale")
-	@Produces({ MediaType.APPLICATION_JSON })
-	@Consumes({ MediaType.APPLICATION_JSON })
-	public SaleDTO updateSale(SaleDTO saleDTO) {
-		SaleDTO existingSale = managementPersistenceSale.getSale(saleDTO.getIdSale());
-		if (existingSale != null) {
-			TvDTO televisor = managementPersistenceSale.findTvBySerialNumber(saleDTO.getTelevisor().getSerialNumber());
-			if (televisor != null) {
-				existingSale.setTelevisor(televisor);
-				existingSale.setSaleDate(saleDTO.getSaleDate());
-				existingSale.setSalePrice(saleDTO.getSalePrice());
-				existingSale.setPaymentMethod(saleDTO.getPaymentMethod());
-				managementPersistenceSale.synchronizeAllFiles(); // Sincroniza todos los formatos
-				return saleDTO;
-			}
-		}
-		return null;
-	}
+    @PUT
+    @Path("/updateSale")
+    @Produces({ MediaType.APPLICATION_JSON })
+    @Consumes({ MediaType.APPLICATION_JSON })
+    public SaleDTO updateSale(SaleDTO saleDTO) {
+        for (SaleDTO existingSale : managementPersistenceSale.getListSale()) {
+            if (existingSale.getIdSale().equals(saleDTO.getIdSale())) {
+                TvDTO televisor = saleDTO.getTelevisor();
+                if (televisor != null) {
+                    existingSale.setTelevisor(televisor);
+                }
+                existingSale.setSaleDate(saleDTO.getSaleDate());
+                existingSale.setSalePrice(saleDTO.getSalePrice());
+                existingSale.setPaymentMethod(saleDTO.getPaymentMethod());
+                managementPersistenceSale.dumpFilePlain("/data/Sale.txt");
+                return existingSale;
+            }
+        }
+        return null; // or throw a custom exception if preferred
+    }
 
-	@PUT
-	@Path("/updateSaleAttribute")
-	@Produces({ MediaType.APPLICATION_JSON })
-	@Consumes({ MediaType.APPLICATION_JSON })
-	public SaleDTO updateSaleAttribute(SaleDTO saleDTO) {
-		SaleDTO existingSale = managementPersistenceSale.getSale(saleDTO.getIdSale());
-		if (existingSale != null) {
-			if (!Objects.isNull(saleDTO.getTelevisor().getSerialNumber())) {
-				TvDTO televisor = managementPersistenceSale
-						.findTvBySerialNumber(saleDTO.getTelevisor().getSerialNumber());
-				if (televisor != null) {
-					existingSale.setTelevisor(televisor);
-				}
-			}
-			if (!Objects.isNull(saleDTO.getSaleDate())) {
-				existingSale.setSaleDate(saleDTO.getSaleDate());
-			}
-			if (!Objects.isNull(saleDTO.getSalePrice())) {
-				existingSale.setSalePrice(saleDTO.getSalePrice());
-			}
-			if (!Objects.isNull(saleDTO.getPaymentMethod())) {
-				existingSale.setPaymentMethod(saleDTO.getPaymentMethod());
-			}
-			managementPersistenceSale.synchronizeAllFiles(); // Sincroniza todos los formatos
-			return saleDTO;
-		}
-		return null;
-	}
+    @PUT
+    @Path("/updateSaleAttribute")
+    @Produces({ MediaType.APPLICATION_JSON })
+    @Consumes({ MediaType.APPLICATION_JSON })
+    public SaleDTO updateSaleAttribute(SaleDTO saleDTO) {
+        for (SaleDTO existingSale : managementPersistenceSale.getListSale()) {
+            if (existingSale.getIdSale().equals(saleDTO.getIdSale())) {
+                if (!Objects.isNull(saleDTO.getTelevisor())) {
+                    existingSale.setTelevisor(saleDTO.getTelevisor());
+                }
+                if (!Objects.isNull(saleDTO.getSaleDate())) {
+                    existingSale.setSaleDate(saleDTO.getSaleDate());
+                }
+                if (!Objects.isNull(saleDTO.getSalePrice())) {
+                    existingSale.setSalePrice(saleDTO.getSalePrice());
+                }
+                if (!Objects.isNull(saleDTO.getPaymentMethod())) {
+                    existingSale.setPaymentMethod(saleDTO.getPaymentMethod());
+                }
+                managementPersistenceSale.dumpFilePlain("/data/Sale.txt");
+                return existingSale;
+            }
+        }
+        return null; // or throw a custom exception if preferred
+    }
 
-	@DELETE
-	@Path("/deleteSale")
-	@Produces({ MediaType.APPLICATION_JSON })
-	public SaleDTO deleteSale(@QueryParam("idSale") String idSale) {
-		SaleDTO sale = managementPersistenceSale.getSale(idSale);
-		if (sale != null) {
-			if (managementPersistenceSale.deleteSale(idSale)) {
-				managementPersistenceSale.synchronizeAllFiles(); // Sincroniza todos los formatos
-				// Usa el constructor que acepta TvDTO
-				return new SaleDTO(sale.getIdSale(), sale.getTelevisor(), sale.getSaleDate(),
-						sale.getSalePrice(), sale.getPaymentMethod());
-			}
-		}
-		return null;
-	}
-
+    @DELETE
+    @Path("/deleteSale")
+    @Produces({ MediaType.APPLICATION_JSON })
+    public SaleDTO deleteSale(@QueryParam("idSale") String idSale) {
+        SaleDTO saleToDelete = getSaleById(idSale);
+        if (saleToDelete != null) {
+            if (managementPersistenceSale.getListSale().remove(saleToDelete)) {
+                managementPersistenceSale.dumpFilePlain("/data/Sale.txt");
+                return saleToDelete;
+            }
+        }
+        return null; // or throw a custom exception if preferred
+    }
 }

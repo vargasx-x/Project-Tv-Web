@@ -6,18 +6,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function addSale() {
         let idSale = document.getElementById('input-sale-id').value;
-        let televisor = document.getElementById('input-tv-code').value;
+        let serialNumber = document.getElementById('input-tv-code').value;
         let saleDate = document.getElementById('input-sale-date').value;
         let salePrice = document.getElementById('input-sale-price').value;
 
         let saleData = {
             idSale,
-            televisor,
+            televisor: { serialNumber }, // Envía el objeto TvDTO con el serialNumber
             saleDate,
-            salePrice
+            salePrice,
+            paymentMethod: '' // Si necesitas un campo de método de pago, agrégalo aquí
         };
 
-        fetch('http://localhost:8080/Tv/rest/ManagementTv/createTve', { // Cambia la URL al endpoint correcto
+        fetch('http://localhost:8080/Tv/rest/ManagementSale/createSale', { // Cambia la URL al endpoint correcto
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
